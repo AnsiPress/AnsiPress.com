@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
+@theme {
+  --color-brand-primary: #8b5cf6;
+  --color-brand-secondary: #ec4899;
+  --animate-fade-in: fade-in 0.5s ease-in-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  
+  --card: 0 0% 3%;
+  --card-foreground: 0 0% 100%;
+ 
+  --popover: 0 0% 3%;
+  --popover-foreground: 0 0% 100%;
+ 
+  --primary: 263.4 70% 50.4%; /* Violet */
+  --primary-foreground: 210 40% 98%;
+ 
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+ 
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+ 
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+ 
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+ 
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 263.4 70% 50.4%;
+  
+  --radius: 0.5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #000000;
+  color: #ffffff;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  max-width: 80rem;
+}
+
+/* Glass effect used in Card */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

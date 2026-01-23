@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { inter, spaceGrotesk } from "@/lib/fonts";
 import "./globals.css";
 
@@ -17,6 +19,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased text-white bg-black`}>
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

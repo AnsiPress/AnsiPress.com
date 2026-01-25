@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { MoveRight } from "lucide-react";
 
 const terminalCommands = [
@@ -12,6 +12,10 @@ const terminalCommands = [
 export function Hero() {
   const [currentCommand, setCurrentCommand] = useState(0);
   const [displayText, setDisplayText] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Typing effect
   useEffect(() => {
@@ -32,6 +36,57 @@ export function Hero() {
 
     return () => clearInterval(interval);
   }, [currentCommand]);
+
+  // Extract UTM parameters from URL
+  const getUtmParams = () => {
+    if (typeof window === "undefined") return {};
+    
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utmSource: params.get("utm_source") || undefined,
+      utmMedium: params.get("utm_medium") || undefined,
+      utmCampaign: params.get("utm_campaign") || undefined,
+      referralSource: params.get("ref") || undefined,
+    };
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const utmParams = getUtmParams();
+      
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          ...utmParams,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to join waitlist");
+      }
+
+      setSuccess(true);
+      setEmail("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
@@ -70,24 +125,44 @@ export function Hero() {
           <div className="text-purple-400">$ {displayText}<span className="animate-pulse">|</span></div>
         </div>
 
-        {/* Static Waitlist Form (Phase 1 - No backend) */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md opacity-60 cursor-not-allowed">
-          <input
-            type="email"
-            placeholder="hello@ansipress.com"
-            disabled
-            className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500"
-          />
-          <button
-            disabled
-            className="h-12 px-8 rounded-full bg-white text-black font-medium inline-flex items-center gap-2"
-          >
-            Join Waitlist
-            <MoveRight className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Waitlist Form */}
+        {success ? (
+          <div className="w-full max-w-md">
+            <div className="rounded-full bg-green-500/10 border border-green-500/20 px-6 py-4 text-center">
+              <p className="text-green-400 font-medium">
+                ✓ Check your email to confirm!
+              </p>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
+            <input
+              type="email"
+              placeholder="hello@ansipress.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+              className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="h-12 px-8 rounded-full bg-white text-black font-medium inline-flex items-center gap-2 hover:bg-white/90 transition-colors disabled:opacity-50"
+            >
+              {loading ? "Joining..." : "Join Waitlist"}
+              <MoveRight className="w-4 h-4" />
+            </button>
+          </form>
+        )}
 
-        <p className="text-zinc-500 text-sm mt-4">Backend integration coming in Phase 2</p>
+        {error && (
+          <p className="text-red-400 text-sm mt-4">{error}</p>
+        )}
+
+        {!success && !error && (
+          <p className="text-zinc-500 text-sm mt-4">Get early access when we launch</p>
+        )}
       </div>
     </section>
   );

@@ -2,15 +2,22 @@ import { redirect } from "next/navigation";
 import { verifyAdminPassword, createAdminSession, setAdminCookie } from "@/lib/auth";
 import Link from "next/link";
 
-export default function AdminLoginPage({
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
+export default async function AdminLoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ redirect?: string }>;
 }) {
+  const params = await searchParams;
+  const redirectTo = params.redirect || "/admin";
+
   async function handleLogin(formData: FormData) {
     "use server";
 
     const password = formData.get("password") as string;
+    const redirectPath = formData.get("redirect") as string;
 
     if (!password) {
       return;
@@ -21,10 +28,7 @@ export default function AdminLoginPage({
     if (isValid) {
       const token = await createAdminSession();
       await setAdminCookie(token);
-
-      const params = await searchParams;
-      const redirectTo = params.redirect || "/admin";
-      redirect(redirectTo);
+      redirect(redirectPath || "/admin");
     }
   }
 
@@ -42,6 +46,7 @@ export default function AdminLoginPage({
         {/* Login Form */}
         <div className="rounded-lg border border-white/10 bg-white/5 p-8">
           <form action={handleLogin} className="space-y-6">
+            <input type="hidden" name="redirect" value={redirectTo} />
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password

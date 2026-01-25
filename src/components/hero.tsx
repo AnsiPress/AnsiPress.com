@@ -5,8 +5,8 @@ import { MoveRight } from "lucide-react";
 
 const terminalCommands = [
   "ansible-playbook -i inventory main.yml",
-  "ansible-playbook -i inventory wordpress.yml --tags wordpress",
-  "ansible-playbook -i inventory security.yml --tags security",
+  "ansible-playbook -i inventory main.yml --tags wordpress",
+  "ansible-playbook -i inventory main.yml --tags security",
 ];
 
 export function Hero() {
@@ -61,7 +61,7 @@ export function Hero() {
         </p>
 
         {/* Terminal Preview */}
-        <div className="w-full max-w-md mb-8 rounded-lg border border-white/10 bg-black/50 backdrop-blur p-4 text-left font-mono text-sm text-green-400">
+        <div className="w-full max-w-xl mb-8 rounded-lg border border-white/10 bg-black/50 backdrop-blur p-4 text-left font-mono text-sm text-green-400">
           <div className="flex items-center gap-2 mb-2 text-zinc-500">
             <div className="w-3 h-3 rounded-full bg-red-500" />
             <div className="w-3 h-3 rounded-full bg-yellow-500" />

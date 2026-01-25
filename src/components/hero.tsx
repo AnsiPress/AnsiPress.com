@@ -5,8 +5,8 @@ import { MoveRight } from "lucide-react";
 
 const terminalCommands = [
   "ansible-playbook -i inventory main.yml",
-  "ansible-playbook deploy.yml --tags wordpress",
-  "ansible-playbook security.yml --tags crowdsec",
+  "ansible-playbook -i inventory wordpress.yml --tags wordpress",
+  "ansible-playbook -i inventory security.yml --tags security",
 ];
 
 export function Hero() {
@@ -50,15 +50,14 @@ export function Hero() {
         </div>
 
         <h1 className="max-w-4xl text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
-          WordPress Hosting for <br />
+          Everything You Need for<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-            Engineers Who Care
+            Modern Hosting
           </span>
         </h1>
 
         <p className="max-w-2xl text-lg md:text-xl text-zinc-400 mb-4 leading-relaxed">
-          Built by the team behind WPMUDEV Hosting (50K+ servers). <br />
-          No control panels. No bloat. Just Ansible, LEMP, and obsessive performance.
+          Deploy, operate, and scale applications using Ansible-powered infrastructure built for real production workloads — predictable, auditable, and proven at scale.
         </p>
 
         {/* Terminal Preview */}
@@ -75,7 +74,7 @@ export function Hero() {
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md opacity-60 cursor-not-allowed">
           <input
             type="email"
-            placeholder="engineer@company.com"
+            placeholder="hello@ansipress.com"
             disabled
             className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500"
           />

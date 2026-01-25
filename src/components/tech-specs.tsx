@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 
 const techStack = {
   "Web Server": ["NGINX (Latest)", "HTTP/2 & HTTP/3", "Brotli Compression"],
-  "Application": ["PHP 8.3, 8.2, 8.1, 7.4", "PHP-FPM", "OPcache Enabled"],
-  "Database": ["MySQL 8.0 / MariaDB 10.11", "Optimized Configuration", "Automated Backups"],
-  "Caching": ["Redis 7.x", "Object Caching", "Page Caching"],
+  "Application": ["PHP 8.5, 8.4, 8.3, 8.2", "PHP-FPM", "OPcache Enabled"],
+  "Database": ["MariaDB 11.08 LTS", "Optimized Configuration", "Automated Backups"],
+  "Caching": ["Redis 8.x", "Object Caching", "Page Caching"],
   "Storage": ["ZFS Native", "Snapshots & Cloning", "Compression (LZ4)"],
-  "Security": ["CrowdSec", "Automated SSL/TLS (Let's Encrypt)", "SSH Hardening", "Firewall (UFW)"],
+  "Security": ["Firewall", "SSH Hardening", "Automated SSL/TLS (Let's Encrypt)"],
   "Backup": ["AnsiSnap", "Incremental & Full Backups", "S3 Storage", "Automated Scheduling"],
   "Tools": ["WP-CLI", "Composer", "Git", "Ansible"],
 };

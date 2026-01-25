@@ -2,32 +2,32 @@ import { Shield, Zap, Code2, Eye, Lock, Rocket } from "lucide-react";
 
 const features = [
   {
-    title: "AI-Powered Firewall",
-    description: "CrowdSec's machine learning blocks threats in real-time. Intelligence shared across 100K+ nodes.",
+    title: "Firewall Protection",
+    description: "CrowdSec blocks threats in real time using shared threat intelligence from 100k+ production nodes.",
     icon: Shield,
     badge: "Security",
   },
   {
     title: "Intelligent Vulnerability Scans",
-    description: "AI-driven WPScan checks every plugin and theme daily. Get alerts before hackers do.",
+    description: "WPScan checks every plugin and theme daily.",
     icon: Lock,
     badge: "Security",
   },
   {
     title: "Auto-Optimized LEMP Stack",
-    description: "Nginx + PHP 8.3 + Redis with AI-tuned configurations. Zero bloat. Zero control panels.",
+    description: "Automatically tuned configurations based on workload patterns",
     icon: Rocket,
     badge: "Performance",
   },
   {
     title: "Smart Backup System",
-    description: "AnsiSnap uses ZFS snapshots with intelligent compression. Your site stays fast during backups.",
+    description: "AnsiSnap uses ZFS snapshots with intelligent compression. Minimal performance impact during backups.",
     icon: Zap,
     badge: "Performance",
   },
   {
     title: "Open Roadmap",
-    description: "See exactly what we're building. Grafana, Uptime monitoring, and Wazuh IDS coming soon.",
+    description: "See exactly what we're building. Grafana dashboards, uptime monitoring, and Wazuh IDS integrations coming soon.",
     icon: Eye,
     badge: "Transparency",
   },
@@ -45,10 +45,10 @@ export function Features() {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl font-bold tracking-tight mb-4">
-            Security Isn't an Addon. <br />It's the Foundation.
+            Security Isn't an Add-On. <br />It's the Foundation.
           </h2>
           <p className="text-zinc-400">
-            We optimize for the metrics that matter: uptime, security, and peace of mind.
+            We optimize for what actually matters in production: uptime, security, and peace of mind.
           </p>
         </div>
 

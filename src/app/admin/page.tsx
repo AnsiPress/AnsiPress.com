@@ -2,27 +2,127 @@ import { Users, CheckCircle, TrendingUp, Mail } from "lucide-react";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { SignupsChart } from "@/components/admin/SignupsChart";
 import { SourcesChart } from "@/components/admin/SourcesChart";
+import { db } from "@/lib/db";
+import { waitlist, emailLogs } from "@/lib/db/schema";
+import { count, eq, gte, sql, desc } from "drizzle-orm";
+
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
 
 /**
- * Fetch stats from API
+ * Fetch stats directly from database
  */
 async function getStats() {
-  const apiKey = process.env.ADMIN_API_KEY;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
   try {
-    const response = await fetch(`${baseUrl}/api/admin/stats`, {
-      headers: {
-        "x-api-key": apiKey || "",
+    // Total signups
+    const [totalSignups] = await db
+      .select({ count: count() })
+      .from(waitlist);
+
+    // Verified emails
+    const [verifiedEmails] = await db
+      .select({ count: count() })
+      .from(waitlist)
+      .where(eq(waitlist.emailVerified, true));
+
+    // Today's signups
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const [todaySignups] = await db
+      .select({ count: count() })
+      .from(waitlist)
+      .where(gte(waitlist.createdAt, today));
+
+    // Last 7 days signups for growth calculation
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const [last7DaysSignups] = await db
+      .select({ count: count() })
+      .from(waitlist)
+      .where(gte(waitlist.createdAt, sevenDaysAgo));
+
+    // Previous 7 days signups for comparison
+    const fourteenDaysAgo = new Date();
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+    const [previous7DaysSignups] = await db
+      .select({ count: count() })
+      .from(waitlist)
+      .where(
+        sql`${waitlist.createdAt} >= ${fourteenDaysAgo} AND ${waitlist.createdAt} < ${sevenDaysAgo}`
+      );
+
+    // Calculate 7-day growth percentage
+    const last7Count = last7DaysSignups?.count || 0;
+    const prev7Count = previous7DaysSignups?.count || 0;
+    const growthPercentage = prev7Count > 0 
+      ? ((last7Count - prev7Count) / prev7Count) * 100 
+      : 0;
+
+    // Signups by day (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    const signupsByDay = await db
+      .select({
+        date: sql<string>`DATE(${waitlist.createdAt})`,
+        count: count(),
+      })
+      .from(waitlist)
+      .where(gte(waitlist.createdAt, thirtyDaysAgo))
+      .groupBy(sql`DATE(${waitlist.createdAt})`)
+      .orderBy(sql`DATE(${waitlist.createdAt})`);
+
+    // Top referral sources
+    const topReferralSources = await db
+      .select({
+        source: waitlist.referralSource,
+        count: count(),
+      })
+      .from(waitlist)
+      .groupBy(waitlist.referralSource)
+      .orderBy(desc(count()))
+      .limit(10);
+
+    // Email delivery stats
+    const [totalEmailsSent] = await db
+      .select({ count: count() })
+      .from(emailLogs);
+
+    const [deliveredEmails] = await db
+      .select({ count: count() })
+      .from(emailLogs)
+      .where(eq(emailLogs.status, "delivered"));
+
+    const [openedEmails] = await db
+      .select({ count: count() })
+      .from(emailLogs)
+      .where(eq(emailLogs.status, "opened"));
+
+    const totalEmails = totalEmailsSent?.count || 0;
+    const deliveredCount = deliveredEmails?.count || 0;
+    const openedCount = openedEmails?.count || 0;
+
+    const deliveryRate = totalEmails > 0 ? (deliveredCount / totalEmails) * 100 : 0;
+    const openRate = totalEmails > 0 ? (openedCount / totalEmails) * 100 : 0;
+
+    return {
+      totalSignups: totalSignups?.count || 0,
+      verifiedEmails: verifiedEmails?.count || 0,
+      todaySignups: todaySignups?.count || 0,
+      growthPercentage: Math.round(growthPercentage * 10) / 10,
+      verificationRate: totalSignups?.count 
+        ? Math.round((verifiedEmails?.count || 0) / totalSignups.count * 100 * 10) / 10
+        : 0,
+      signupsByDay,
+      topReferralSources,
+      emailStats: {
+        totalSent: totalEmails,
+        delivered: deliveredCount,
+        opened: openedCount,
+        deliveryRate: Math.round(deliveryRate * 10) / 10,
+        openRate: Math.round(openRate * 10) / 10,
       },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch stats");
-    }
-
-    return response.json();
+    };
   } catch (error) {
     console.error("Error fetching stats:", error);
     return null;

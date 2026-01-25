@@ -56,7 +56,7 @@ export async function sendWelcomeEmail(
   waitlistId: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const emailHtml = render(
+    const emailHtml = await render(
       WelcomeEmail({ email: to, verificationToken })
     );
 
@@ -93,7 +93,7 @@ export async function sendAdminNotification(data: {
   utmSource?: string;
 }): Promise<{ success: boolean; error?: string }> {
   try {
-    const emailHtml = render(AdminNotificationEmail(data));
+    const emailHtml = await render(AdminNotificationEmail(data));
 
     const { error } = await resend.emails.send({
       from: getFromEmail(),
@@ -124,7 +124,7 @@ export async function sendWeeklyUpdate(
   waitlistId: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const emailHtml = render(
+    const emailHtml = await render(
       WeeklyUpdateEmail({ email: to, updates })
     );
 

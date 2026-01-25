@@ -4,8 +4,11 @@ import { useState, useEffect } from "react";
 import { WaitlistTable } from "@/components/admin/WaitlistTable";
 import type { Waitlist } from "@/lib/db/schema";
 
+// Type for the API response
+type WaitlistEntry = Waitlist & { emailLogCount: number };
+
 export default function AdminWaitlistPage() {
-  const [entries, setEntries] = useState<Array<Waitlist & { emailLogCount: number }>>([]);
+  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -15,7 +18,7 @@ export default function AdminWaitlistPage() {
     emailVerified: "",
   });
 
-  // Fetch waitlist entries
+  // Fetch waitlist entries via server action
   useEffect(() => {
     const fetchEntries = async () => {
       setLoading(true);
@@ -34,11 +37,8 @@ export default function AdminWaitlistPage() {
           params.set("emailVerified", filters.emailVerified);
         }
 
-        const response = await fetch(`/api/admin/waitlist?${params}`, {
-          headers: {
-            "x-api-key": process.env.NEXT_PUBLIC_ADMIN_API_KEY || "",
-          },
-        });
+        // Call via the server-protected route (middleware handles auth)
+        const response = await fetch(`/api/admin/waitlist/client?${params}`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch waitlist");
@@ -59,11 +59,10 @@ export default function AdminWaitlistPage() {
 
   const handleUpdate = async (id: number, updates: Partial<Waitlist>) => {
     try {
-      const response = await fetch(`/api/admin/waitlist/${id}`, {
+      const response = await fetch(`/api/admin/waitlist/client/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": process.env.NEXT_PUBLIC_ADMIN_API_KEY || "",
         },
         body: JSON.stringify(updates),
       });
@@ -86,11 +85,8 @@ export default function AdminWaitlistPage() {
     }
 
     try {
-      const response = await fetch(`/api/admin/waitlist/${id}`, {
+      const response = await fetch(`/api/admin/waitlist/client/${id}`, {
         method: "DELETE",
-        headers: {
-          "x-api-key": process.env.NEXT_PUBLIC_ADMIN_API_KEY || "",
-        },
       });
 
       if (!response.ok) {

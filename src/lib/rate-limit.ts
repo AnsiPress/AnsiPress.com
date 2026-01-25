@@ -12,9 +12,9 @@ const ipLimits = new Map<string, RateLimitEntry>();
 const emailLimits = new Map<string, RateLimitEntry>();
 
 /**
- * Clean up expired entries every 5 minutes
+ * Clean up expired entries (called on-demand during rate limit checks)
  */
-setInterval(() => {
+function cleanupExpiredEntries() {
   const now = Date.now();
   
   for (const [key, entry] of ipLimits.entries()) {
@@ -28,7 +28,7 @@ setInterval(() => {
       emailLimits.delete(key);
     }
   }
-}, 5 * 60 * 1000);
+}
 
 /**
  * Check rate limit for IP address
@@ -39,6 +39,11 @@ export function checkIpRateLimit(
   maxRequests = 5,
   windowMs = 60 * 60 * 1000 // 1 hour
 ): { allowed: boolean; remaining: number; resetAt: number } {
+  // Clean up expired entries periodically (every 100 checks)
+  if (Math.random() < 0.01) {
+    cleanupExpiredEntries();
+  }
+
   const now = Date.now();
   const entry = ipLimits.get(ip);
 
@@ -70,6 +75,11 @@ export function checkEmailRateLimit(
   maxRequests = 3,
   windowMs = 24 * 60 * 60 * 1000 // 24 hours
 ): { allowed: boolean; remaining: number; resetAt: number } {
+  // Clean up expired entries periodically (every 100 checks)
+  if (Math.random() < 0.01) {
+    cleanupExpiredEntries();
+  }
+
   const now = Date.now();
   const normalizedEmail = email.toLowerCase();
   const entry = emailLimits.get(normalizedEmail);

@@ -27,7 +27,8 @@ export const AdminNotificationEmail = ({
   referralSource,
   utmSource,
 }: AdminNotificationEmailProps) => {
-  const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://ansipress.com"}/admin/waitlist`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://ansipress.com";
+  const dashboardUrl = `${baseUrl}/admin/waitlist`;
   
   // Highlight high-value leads
   const isHighValue = 

@@ -20,8 +20,9 @@ export const WelcomeEmail = ({
   email,
   verificationToken,
 }: WelcomeEmailProps) => {
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://ansipress.com"}/verify?token=${verificationToken}`;
-  const unsubscribeUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://ansipress.com"}/unsubscribe?email=${encodeURIComponent(email)}`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://ansipress.com";
+  const verificationUrl = `${baseUrl}/verify?token=${verificationToken}`;
+  const unsubscribeUrl = `${baseUrl}/unsubscribe?email=${encodeURIComponent(email)}`;
 
   return (
     <Html>

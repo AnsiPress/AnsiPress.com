@@ -23,8 +23,14 @@ export async function verifyAdminPassword(password: string): Promise<boolean> {
     return bcrypt.compare(password, adminPassword);
   }
   
-  // Plain text comparison (for development only)
-  return password === adminPassword;
+  // Plain text comparison (only for development)
+  if (process.env.NODE_ENV !== "production") {
+    return password === adminPassword;
+  }
+  
+  // Reject plain passwords in production
+  console.error("Plain text passwords are not allowed in production. Use bcrypt hashed passwords.");
+  return false;
 }
 
 /**

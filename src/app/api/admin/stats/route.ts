@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { waitlist, emailLogs } from "@/lib/db/schema";
-import { count, eq, gte, sql } from "drizzle-orm";
+import { count, eq, gte, sql, desc } from "drizzle-orm";
 import { verifyAdminApiKey } from "@/lib/auth";
 
 /**

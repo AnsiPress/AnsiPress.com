@@ -2,26 +2,26 @@ import { Shield, Zap, Code2, Eye, Lock, Rocket } from "lucide-react";
 
 const features = [
   {
-    title: "Community-Powered Firewall",
-    description: "CrowdSec blocks threats before they hit your server. Intelligence shared across 100K+ nodes.",
+    title: "AI-Powered Firewall",
+    description: "CrowdSec's machine learning blocks threats in real-time. Intelligence shared across 100K+ nodes.",
     icon: Shield,
     badge: "Security",
   },
   {
-    title: "Daily Vulnerability Scans",
-    description: "WPScan checks every plugin and theme. Get alerts before hackers do.",
+    title: "Intelligent Vulnerability Scans",
+    description: "AI-driven WPScan checks every plugin and theme daily. Get alerts before hackers do.",
     icon: Lock,
     badge: "Security",
   },
   {
-    title: "LEMP Stack, Tuned by Pros",
-    description: "Nginx + PHP 8.3 + Redis. Zero bloat. Zero control panels slowing you down.",
+    title: "Auto-Optimized LEMP Stack",
+    description: "Nginx + PHP 8.3 + Redis with AI-tuned configurations. Zero bloat. Zero control panels.",
     icon: Rocket,
     badge: "Performance",
   },
   {
-    title: "Backups That Don't Freeze",
-    description: "AnsiSnap uses incremental ZFS snapshots. Your site stays fast during backups.",
+    title: "Smart Backup System",
+    description: "AnsiSnap uses ZFS snapshots with intelligent compression. Your site stays fast during backups.",
     icon: Zap,
     badge: "Performance",
   },

@@ -32,7 +32,7 @@ export const WeeklyUpdateEmail = ({
           <Section style={header}>
             <Heading style={h1}>Weekly Update</Heading>
             <Text style={tagline}>
-              What's happening at AnsiPress
+              What&apos;s happening at AnsiPress
             </Text>
           </Section>
 

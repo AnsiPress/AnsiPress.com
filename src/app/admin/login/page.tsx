@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { verifyAdminPassword, createAdminSession, setAdminCookie } from "@/lib/auth";
+import Link from "next/link";
 
 export default function AdminLoginPage({
   searchParams,
@@ -67,9 +68,9 @@ export default function AdminLoginPage({
 
         {/* Back to Site */}
         <div className="mt-6 text-center">
-          <a href="/" className="text-sm text-zinc-400 hover:text-white transition-colors">
+          <Link href="/" className="text-sm text-zinc-400 hover:text-white transition-colors">
             ← Back to AnsiPress.com
-          </a>
+          </Link>
         </div>
       </div>
     </div>

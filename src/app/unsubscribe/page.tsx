@@ -96,7 +96,7 @@ export default function UnsubscribePage() {
               {showFeedback && (
                 <form onSubmit={handleFeedbackSubmit} className="mb-6">
                   <p className="text-sm text-zinc-400 mb-3">
-                    We're sorry to see you go. Mind telling us why?
+                    We&apos;re sorry to see you go. Mind telling us why?
                   </p>
                   <textarea
                     value={feedback}
@@ -114,7 +114,7 @@ export default function UnsubscribePage() {
               )}
 
               <p className="text-sm text-zinc-500 mb-4">
-                You won't receive any more emails from us.
+                You won&apos;t receive any more emails from us.
               </p>
               <Link
                 href="/"

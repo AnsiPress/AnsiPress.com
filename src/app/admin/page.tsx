@@ -46,7 +46,7 @@ export default async function AdminDashboardPage() {
       <div>
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="text-zinc-400 mt-2">
-          Welcome back! Here's what's happening with your waitlist.
+          Welcome back! Here&apos;s what&apos;s happening with your waitlist.
         </p>
       </div>
 

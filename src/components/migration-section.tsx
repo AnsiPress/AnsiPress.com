@@ -54,10 +54,10 @@ export function MigrationSection() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">
-              Moving Hosts is a Pain. <br />We'll Do It For You.
+              Moving Hosts is a Pain. <br />We&apos;ll Do It For You.
             </h2>
             <p className="text-zinc-400">
-              Tell us about your current setup. We'll send you a custom migration plan—free, no obligations.
+              Tell us about your current setup. We&apos;ll send you a custom migration plan—free, no obligations.
             </p>
           </div>
 
@@ -67,7 +67,7 @@ export function MigrationSection() {
                 ✓ Request Received!
               </h3>
               <p className="text-zinc-300">
-                We'll send your migration plan within 24 hours. Check your email!
+                We&apos;ll send your migration plan within 24 hours. Check your email!
               </p>
             </div>
           ) : (

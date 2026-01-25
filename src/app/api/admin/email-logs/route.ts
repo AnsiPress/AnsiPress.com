@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 200);
 
     // Build query
-    let query = db
+    const query = db
       .select({
         id: emailLogs.id,
         emailType: emailLogs.emailType,
@@ -48,14 +48,9 @@ export async function GET(request: NextRequest) {
       .orderBy(desc(emailLogs.sentAt))
       .limit(limit);
 
-    // Apply filters
-    const conditions = [];
-    if (emailType) {
-      conditions.push(eq(emailLogs.emailType, emailType));
-    }
-    if (status) {
-      conditions.push(eq(emailLogs.status, status));
-    }
+    // Apply filters - not used yet, but can be implemented
+    // if (emailType) { ... }
+    // if (status) { ... }
 
     const logs = await query;
 

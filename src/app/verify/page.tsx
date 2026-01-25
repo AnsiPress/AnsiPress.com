@@ -87,7 +87,7 @@ export default function VerifyPage() {
               <h2 className="text-2xl font-bold text-white mb-2">Success!</h2>
               <p className="text-zinc-400 mb-6">{message}</p>
               <p className="text-sm text-zinc-500 mb-4">
-                You'll now receive updates about AnsiPress. Get ready for early access!
+                You&apos;ll now receive updates about AnsiPress. Get ready for early access!
               </p>
               <div className="flex items-center justify-center gap-4 mb-4">
                 <a

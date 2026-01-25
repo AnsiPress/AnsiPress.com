@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { waitlist, emailLogs } from "@/lib/db/schema";
 import { eq, desc, count, and } from "drizzle-orm";
 import { verifyAdminApiKey } from "@/lib/auth";
-import { z } from "zod";
 
 /**
  * Verify admin authentication

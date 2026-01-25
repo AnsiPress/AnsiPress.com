@@ -111,7 +111,7 @@ export function TechSpecsSection() {
           </Card>
         </motion.div>
 
-        {/* Supported Site Types */}
+        {/* Supported Site Types 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -132,6 +132,7 @@ export function TechSpecsSection() {
             )}
           </div>
         </motion.div>
+        */}
       </div>
     </section>
   );

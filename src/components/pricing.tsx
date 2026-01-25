@@ -12,7 +12,7 @@ const tiers = [
       "20GB SSD Storage",
       "Weekly Backups",
       "Community Support",
-      "AI-Powered Monitoring",
+      "Automated Server Monitoring",
     ],
   },
   {
@@ -24,8 +24,8 @@ const tiers = [
       "4GB RAM",
       "50GB NVMe Storage",
       "Daily Backups",
-      "AI Threat Detection",
       "Priority Support",
+      "Automated Threat Detection",
       "Free Migration",
     ],
   },
@@ -39,9 +39,8 @@ const tiers = [
       "8GB RAM",
       "100GB NVMe Storage",
       "Hourly Backups",
-      "AI Security Scanning",
-      "Intelligent Load Balancing",
       "24/7 Phone Support",
+      "Automated Security Scanning",
       "Free Migration + Audit",
     ],
   },
@@ -52,12 +51,11 @@ const tiers = [
     features: [
       "Custom Resources",
       "Dedicated Infrastructure",
-      "Real-time Backups",
-      "AI-Powered Optimization",
-      "Advanced Threat Intelligence",
+      "Hourly Backups",
       "Dedicated Account Manager",
+      "Advanced Threat Intelligence",
+      "Automated Infrastructure Optimization",
       "SLA Guarantee",
-      "Custom Integrations",
     ],
   },
 ];
@@ -80,7 +78,7 @@ export function Pricing() {
             No Hidden Fees.
           </h2>
           <p className="text-zinc-400 text-lg">
-            Every plan includes AI-powered monitoring, security scanning, and automated backups.
+            Every plan includes monitoring, security scanning, and automated backups.
           </p>
         </div>
 
@@ -142,15 +140,6 @@ export function Pricing() {
           <p className="text-zinc-400 mb-4">
             All plans include a 30-day money-back guarantee. No questions asked.
           </p>
-          <Link
-            href="/compare"
-            className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors text-sm font-medium"
-          >
-            Compare all features
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
       </div>
     </section>

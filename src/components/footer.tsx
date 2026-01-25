@@ -8,8 +8,8 @@ export function Footer() {
         <div className="flex gap-6">
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
           <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-          <Link href="/twitter" className="hover:text-white transition-colors">Twitter</Link>
-          <Link href="/github" className="hover:text-white transition-colors">GitHub</Link>
+          <Link href="https://twitter.com/ansipress" className="hover:text-white transition-colors">Twitter</Link>
+          <Link href="https://github.com/ansipress" className="hover:text-white transition-colors">GitHub</Link>
         </div>
       </div>
     </footer>

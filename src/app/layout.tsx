@@ -7,9 +7,9 @@ import "./globals.css";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ansipress.com";
 
 export const metadata: Metadata = {
-  title: "AnsiPress - Ansible-Powered Hosting Automation",
+  title: "AnsiPress - Everything You Need for Modern Hosting",
   description:
-    "Enterprise-grade hosting automation with ZFS snapshots, intelligent backups, and one-command deployments.",
+    "Deploy, operate, and scale applications using Ansible-powered infrastructure built for real production workloads — predictable, auditable, and proven at scale.",
   metadataBase: new URL(siteUrl),
   keywords: [
     "Ansible",
@@ -38,15 +38,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: siteUrl,
     siteName: "AnsiPress",
-    title: "AnsiPress - Ansible-Powered Hosting Automation",
+    title: "AnsiPress - Everything You Need for Modern Hosting",
     description:
-      "Enterprise-grade hosting automation with ZFS snapshots, intelligent backups, and one-command deployments.",
+      "Deploy, operate, and scale applications using Ansible-powered infrastructure built for real production workloads — predictable, auditable, and proven at scale.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "AnsiPress - Ansible-Powered Hosting Automation",
+    title: "AnsiPress - Everything You Need for Modern Hosting",
     description:
-      "Enterprise-grade hosting automation with ZFS snapshots, intelligent backups, and one-command deployments.",
+      "Deploy, operate, and scale applications using Ansible-powered infrastructure built for real production workloads — predictable, auditable, and proven at scale.",
     creator: "@ansipress",
   },
   robots: {

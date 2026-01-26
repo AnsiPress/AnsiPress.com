@@ -1,9 +1,11 @@
 import { ReactNode } from "react";
 import Link from "next/link";
-import { clearAdminCookie } from "@/lib/auth";
+import { clearAdminCookie, isAdminAuthenticated } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const isAuthenticated = await isAdminAuthenticated();
+
   async function handleLogout() {
     "use server";
     await clearAdminCookie();
@@ -20,26 +22,28 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <Link href="/admin" className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
                 AnsiPress Admin
               </Link>
-              <nav className="flex gap-6">
-                <Link
-                  href="/admin"
-                  className="text-sm text-zinc-400 hover:text-white transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/admin/waitlist"
-                  className="text-sm text-zinc-400 hover:text-white transition-colors"
-                >
-                  Waitlist
-                </Link>
-                <Link
-                  href="/admin/contacts"
-                  className="text-sm text-zinc-400 hover:text-white transition-colors"
-                >
-                  Contacts
-                </Link>
-              </nav>
+              {isAuthenticated && (
+                <nav className="flex gap-6">
+                  <Link
+                    href="/admin"
+                    className="text-sm text-zinc-400 hover:text-white transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/admin/waitlist"
+                    className="text-sm text-zinc-400 hover:text-white transition-colors"
+                  >
+                    Waitlist
+                  </Link>
+                  <Link
+                    href="/admin/contacts"
+                    className="text-sm text-zinc-400 hover:text-white transition-colors"
+                  >
+                    Contacts
+                  </Link>
+                </nav>
+              )}
             </div>
             <div className="flex items-center gap-4">
               <Link
@@ -48,14 +52,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               >
                 View Site
               </Link>
-              <form action={handleLogout}>
-                <button
-                  type="submit"
-                  className="text-sm text-zinc-400 hover:text-white transition-colors"
-                >
-                  Logout
-                </button>
-              </form>
+              {isAuthenticated && (
+                <form action={handleLogout}>
+                  <button
+                    type="submit"
+                    className="text-sm text-zinc-400 hover:text-white transition-colors"
+                  >
+                    Logout
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>

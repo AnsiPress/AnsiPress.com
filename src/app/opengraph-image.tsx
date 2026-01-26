@@ -51,7 +51,7 @@ export default async function Image() {
             lineHeight: 1.4,
           }}
         >
-          Ansible-Powered Hosting Automation
+          Everything You Need for Modern Hosting
         </div>
       </div>
     ),

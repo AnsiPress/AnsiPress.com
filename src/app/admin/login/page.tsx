@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { verifyAdminPassword, createAdminSession, setAdminCookie } from "@/lib/auth";
 import Link from "next/link";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 // Force dynamic rendering for this page
 export const dynamic = 'force-dynamic';
@@ -37,8 +38,8 @@ export default async function AdminLoginPage({
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            AnsiPress <span className="text-purple-400">Admin</span>
+          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2 inline-block">
+            AnsiPress Admin
           </h1>
           <p className="text-zinc-400">Enter your password to continue</p>
         </div>

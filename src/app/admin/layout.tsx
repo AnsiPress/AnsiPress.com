@@ -17,8 +17,8 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/admin" className="text-xl font-bold">
-                AnsiPress <span className="text-purple-400">Admin</span>
+              <Link href="/admin" className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
+                AnsiPress Admin
               </Link>
               <nav className="flex gap-6">
                 <Link
@@ -32,6 +32,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   className="text-sm text-zinc-400 hover:text-white transition-colors"
                 >
                   Waitlist
+                </Link>
+                <Link
+                  href="/admin/contacts"
+                  className="text-sm text-zinc-400 hover:text-white transition-colors"
+                >
+                  Contacts
                 </Link>
               </nav>
             </div>

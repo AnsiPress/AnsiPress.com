@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 function VerifyContent() {
   const searchParams = useSearchParams();
@@ -53,8 +54,8 @@ function VerifyContent() {
       <div className="max-w-md w-full text-center">
         {/* Logo/Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            Ansi<span className="text-purple-400">Press</span>
+          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2 inline-block">
+            AnsiPress
           </h1>
         </div>
 
@@ -152,8 +153,8 @@ function VerifyLoading() {
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            Ansi<span className="text-purple-400">Press</span>
+          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2 inline-block">
+            AnsiPress
           </h1>
         </div>
         <div className="rounded-lg border border-white/10 bg-white/5 p-8">

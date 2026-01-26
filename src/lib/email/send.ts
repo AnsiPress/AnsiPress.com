@@ -3,6 +3,7 @@ import { render } from "@react-email/components";
 import { WelcomeEmail } from "./templates/WelcomeEmail";
 import { AdminNotificationEmail } from "./templates/AdminNotificationEmail";
 import { WeeklyUpdateEmail } from "./templates/WeeklyUpdateEmail";
+import { EnterpriseContactEmail } from "./templates/EnterpriseContactEmail";
 import { db } from "../db";
 import { emailLogs } from "../db/schema";
 
@@ -146,5 +147,40 @@ export async function sendWeeklyUpdate(
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     await logEmail(waitlistId, "weekly_update", undefined, errorMessage);
     return { success: false, error: errorMessage };
+  }
+}
+
+/**
+ * Send enterprise contact notification to admin
+ */
+export async function sendEnterpriseContactNotification(data: {
+  name: string;
+  email: string;
+  company?: string;
+  website?: string;
+  useCase?: string;
+  message: string;
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  referralSource?: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const emailHtml = await render(EnterpriseContactEmail(data));
+
+    const { error } = await resend.emails.send({
+      from: getFromEmail(),
+      to: getAdminEmail(),
+      subject: `New Enterprise Contact: ${data.name} <${data.email}>`,
+      html: emailHtml,
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+    return { success: true };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    return { success: false, error: message };
   }
 }

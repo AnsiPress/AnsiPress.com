@@ -89,13 +89,17 @@ src/
 │   │   ├── waitlist/     # Waitlist endpoints
 │   │   ├── admin/        # Admin endpoints
 │   │   ├── verify/       # Email verification
-│   │   └── unsubscribe/  # Unsubscribe endpoint
+│   │   ├── unsubscribe/  # Unsubscribe endpoint
+│   │   └── contact/      # Enterprise contact endpoint
 │   ├── admin/            # Admin dashboard pages
+│   │   └── contacts/     # Enterprise contacts admin view
 │   ├── verify/           # Email verification page
-│   └── unsubscribe/      # Unsubscribe page
+│   ├── unsubscribe/      # Unsubscribe page
+│   ├── contact/          # Enterprise contact page
+│   └── start/            # Unified get started (waitlist/signin/quickstart)
 ├── components/           # React components
 │   ├── admin/            # Admin dashboard components
-│   └── ui/               # UI components
+│   └── ui/               # UI components (BrandLogo, etc.)
 └── lib/
     ├── db/               # Database schema and client
     ├── email/            # Email templates and service
@@ -137,6 +141,19 @@ src/
 - `npm run db:studio` - Open Drizzle Studio
 - `npm run db:seed` - Seed database with test data
 
+## Database Schema
+
+- `waitlist` - User waitlist entries
+- `email_logs` - Email sending logs
+- `enterprise_contacts` - Enterprise contact form submissions
+
+After modifying schema run:
+
+```bash
+npm run db:generate
+npm run db:push
+```
+
 ## API Endpoints
 
 ### Public Endpoints
@@ -145,6 +162,7 @@ src/
 - `GET /api/waitlist?email={email}` - Check subscription status
 - `POST /api/verify` - Verify email address
 - `POST /api/unsubscribe` - Unsubscribe from waitlist
+- `POST /api/contact` - Submit enterprise contact request
 
 ### Admin Endpoints (require API key)
 
@@ -153,6 +171,12 @@ src/
 - `DELETE /api/admin/waitlist/[id]` - Delete waitlist entry
 - `GET /api/admin/email-logs` - View email history
 - `GET /api/admin/stats` - Get dashboard statistics
+
+### Admin Pages
+
+- `/admin` - Dashboard
+- `/admin/waitlist` - Waitlist management
+- `/admin/contacts` - Enterprise contact submissions
 
 ## Deployment
 

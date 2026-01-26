@@ -51,3 +51,24 @@ export type Waitlist = typeof waitlist.$inferSelect;
 export type NewWaitlist = typeof waitlist.$inferInsert;
 export type EmailLog = typeof emailLogs.$inferSelect;
 export type NewEmailLog = typeof emailLogs.$inferInsert;
+
+/**
+ * Enterprise contacts table - stores contact requests from enterprise customers
+ */
+export const enterpriseContacts = pgTable("enterprise_contacts", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  company: text("company"),
+  website: text("website"),
+  useCase: text("use_case"),
+  message: text("message").notNull(),
+  utmSource: text("utm_source"),
+  utmMedium: text("utm_medium"),
+  utmCampaign: text("utm_campaign"),
+  referralSource: text("referral_source"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type EnterpriseContact = typeof enterpriseContacts.$inferSelect;
+export type NewEnterpriseContact = typeof enterpriseContacts.$inferInsert;

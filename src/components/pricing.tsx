@@ -122,7 +122,7 @@ export function Pricing() {
               </ul>
 
               <Link
-                href={tier.price === "Custom" ? "/contact" : "/signup"}
+                href={tier.price === "Custom" ? "/contact" : "/start"}
                 className={`block w-full py-2.5 rounded-lg text-center font-medium transition-all ${
                   tier.highlighted
                     ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30"

@@ -1,9 +1,9 @@
-import { Users, CheckCircle, TrendingUp, Mail } from "lucide-react";
+import { Users, CheckCircle, TrendingUp, Mail, Building2 } from "lucide-react";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { SignupsChart } from "@/components/admin/SignupsChart";
 import { SourcesChart } from "@/components/admin/SourcesChart";
 import { db } from "@/lib/db";
-import { waitlist, emailLogs } from "@/lib/db/schema";
+import { waitlist, emailLogs, enterpriseContacts } from "@/lib/db/schema";
 import { count, eq, gte, sql, desc } from "drizzle-orm";
 
 // Force dynamic rendering for this page
@@ -105,6 +105,41 @@ async function getStats() {
     const deliveryRate = totalEmails > 0 ? (deliveredCount / totalEmails) * 100 : 0;
     const openRate = totalEmails > 0 ? (openedCount / totalEmails) * 100 : 0;
 
+    // Enterprise contact stats
+    const [totalEnterpriseContacts] = await db
+      .select({ count: count() })
+      .from(enterpriseContacts);
+
+    const [enterpriseThisWeek] = await db
+      .select({ count: count() })
+      .from(enterpriseContacts)
+      .where(gte(enterpriseContacts.createdAt, sevenDaysAgo));
+
+    const [enterpriseLastWeek] = await db
+      .select({ count: count() })
+      .from(enterpriseContacts)
+      .where(
+        sql`${enterpriseContacts.createdAt} >= ${fourteenDaysAgo} AND ${enterpriseContacts.createdAt} < ${sevenDaysAgo}`
+      );
+
+    const [enterpriseThisMonth] = await db
+      .select({ count: count() })
+      .from(enterpriseContacts)
+      .where(gte(enterpriseContacts.createdAt, thirtyDaysAgo));
+
+    const enterpriseThisWeekCount = enterpriseThisWeek?.count || 0;
+    const enterpriseLastWeekCount = enterpriseLastWeek?.count || 0;
+    
+    // Calculate growth - if last week was 0 but this week has signups, show 100%
+    let enterpriseGrowth: number | null;
+    if (enterpriseLastWeekCount > 0) {
+      enterpriseGrowth = ((enterpriseThisWeekCount - enterpriseLastWeekCount) / enterpriseLastWeekCount) * 100;
+    } else if (enterpriseThisWeekCount > 0) {
+      enterpriseGrowth = 100; // New growth from zero
+    } else {
+      enterpriseGrowth = null; // Both are 0, no meaningful growth
+    }
+
     return {
       totalSignups: totalSignups?.count || 0,
       verifiedEmails: verifiedEmails?.count || 0,
@@ -121,6 +156,13 @@ async function getStats() {
         opened: openedCount,
         deliveryRate: Math.round(deliveryRate * 10) / 10,
         openRate: Math.round(openRate * 10) / 10,
+      },
+      enterpriseStats: {
+        total: totalEnterpriseContacts?.count || 0,
+        thisWeek: enterpriseThisWeekCount,
+        lastWeek: enterpriseLastWeekCount,
+        thisMonth: enterpriseThisMonth?.count || 0,
+        growth: enterpriseGrowth !== null ? Math.round(enterpriseGrowth * 10) / 10 : null,
       },
     };
   } catch (error) {
@@ -173,6 +215,37 @@ export default async function AdminDashboardPage() {
           value={`${stats.emailStats.deliveryRate}%`}
           icon={<Mail className="w-8 h-8" />}
         />
+        <StatsCard
+          title="Enterprise Contacts"
+          value={stats.enterpriseStats.total}
+          change={stats.enterpriseStats.growth ?? undefined}
+          icon={<Building2 className="w-8 h-8" />}
+        />
+      </div>
+
+      {/* Enterprise Stats */}
+      <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">Enterprise Contact Stats</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="text-center p-4 rounded-lg bg-white/5">
+            <p className="text-2xl font-bold text-white">{stats.enterpriseStats.thisWeek}</p>
+            <p className="text-sm text-zinc-400">This Week</p>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/5">
+            <p className="text-2xl font-bold text-white">{stats.enterpriseStats.lastWeek}</p>
+            <p className="text-sm text-zinc-400">Last Week</p>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/5">
+            <p className="text-2xl font-bold text-white">{stats.enterpriseStats.thisMonth}</p>
+            <p className="text-sm text-zinc-400">This Month</p>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-white/5">
+            <p className={`text-2xl font-bold ${stats.enterpriseStats.growth === null ? 'text-zinc-400' : stats.enterpriseStats.growth >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {stats.enterpriseStats.growth === null ? '—' : `${stats.enterpriseStats.growth >= 0 ? '+' : ''}${stats.enterpriseStats.growth}%`}
+            </p>
+            <p className="text-sm text-zinc-400">Week over Week</p>
+          </div>
+        </div>
       </div>
 
       {/* Charts */}

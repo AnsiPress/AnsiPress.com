@@ -71,7 +71,7 @@ export default function ContactPage() {
             body: JSON.stringify({
               email: form.email,
               website: websiteForWaitlist,
-              referralSource: "enterprise_contact",
+              referralSource: "enterprise_customer",
               utmSource: utmParams.get("utm_source") || undefined,
               utmMedium: utmParams.get("utm_medium") || undefined,
               utmCampaign: utmParams.get("utm_campaign") || undefined,

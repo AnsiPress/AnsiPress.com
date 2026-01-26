@@ -25,7 +25,10 @@ export function MigrationSection() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          referralSource: "migration_customer",
+        }),
       });
 
       const data = await response.json();

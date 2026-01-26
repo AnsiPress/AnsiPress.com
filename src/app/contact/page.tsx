@@ -11,9 +11,11 @@ export default function ContactPage() {
     useCase: "",
     message: "",
   });
+  const [joinWaitlist, setJoinWaitlist] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [waitlistAdded, setWaitlistAdded] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -40,6 +42,7 @@ export default function ContactPage() {
         referralSource: utmParams.get("ref") || undefined,
       };
 
+      // Submit contact form
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -47,6 +50,44 @@ export default function ContactPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to submit");
+
+      // If checkbox is checked, also add to waitlist
+      if (joinWaitlist) {
+        try {
+          // Only include website if it's a valid URL
+          let websiteForWaitlist: string | undefined = undefined;
+          if (form.website) {
+            try {
+              new URL(form.website.startsWith("http") ? form.website : `https://${form.website}`);
+              websiteForWaitlist = form.website.startsWith("http") ? form.website : `https://${form.website}`;
+            } catch {
+              // Invalid URL, skip it
+            }
+          }
+
+          const waitlistRes = await fetch("/api/waitlist", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: form.email,
+              website: websiteForWaitlist,
+              referralSource: "enterprise_contact",
+              utmSource: utmParams.get("utm_source") || undefined,
+              utmMedium: utmParams.get("utm_medium") || undefined,
+              utmCampaign: utmParams.get("utm_campaign") || undefined,
+            }),
+          });
+          const waitlistData = await waitlistRes.json();
+          console.log("Waitlist response:", waitlistRes.status, waitlistData);
+          if (waitlistRes.ok) {
+            setWaitlistAdded(true);
+          }
+        } catch (waitlistErr) {
+          console.error("Waitlist error:", waitlistErr);
+          // Silently fail waitlist - contact form was still submitted
+        }
+      }
+
       setSuccess(true);
       setForm({ name: "", email: "", company: "", website: "", useCase: "", message: "" });
     } catch (err) {
@@ -68,8 +109,14 @@ export default function ContactPage() {
 
         <div className="rounded-lg border border-white/10 bg-white/5 p-6">
           {success ? (
-            <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-6 text-center">
-              <p className="text-green-400 font-medium">Thank you! We will get back to you shortly.</p>
+            <div className="text-center py-4">
+              <h2 className="text-2xl font-bold text-green-400 mb-2">Thank you!</h2>
+              <p className="text-zinc-400">We&apos;ve received your message and will get back to you soon.</p>
+              {waitlistAdded && (
+                <p className="text-zinc-400 mt-2">
+                  ✓ Check your email to verify your waitlist signup.
+                </p>
+              )}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,14 +142,28 @@ export default function ContactPage() {
               </div>
               <div>
                 <label className="block text-sm mb-2">Use Case</label>
-                <input name="useCase" value={form.useCase} onChange={handleChange} className="w-full h-11 px-3 rounded-lg bg-white/10 border border-white/20" />
+                <input name="useCase" value={form.useCase} onChange={handleChange} className="w-full h-11 px-3 rounded-lg bg-white/10 border border-white/20" placeholder="e.g., E-commerce, Blog, SaaS" />
               </div>
               <div>
                 <label className="block text-sm mb-2">Message *</label>
-                <textarea name="message" value={form.message} onChange={handleChange} required className="w-full h-28 px-3 py-2 rounded-lg bg-white/10 border border-white/20" />
+                <textarea name="message" value={form.message} onChange={handleChange} required className="w-full h-28 px-3 py-2 rounded-lg bg-white/10 border border-white/20" placeholder="Tell us about your requirements..." />
               </div>
+              
+              <div className="flex items-center gap-3 py-2">
+                <input
+                  type="checkbox"
+                  id="joinWaitlist"
+                  checked={joinWaitlist}
+                  onChange={(e) => setJoinWaitlist(e.target.checked)}
+                  className="w-5 h-5 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-offset-0 cursor-pointer"
+                />
+                <label htmlFor="joinWaitlist" className="text-sm text-zinc-300 cursor-pointer">
+                  Also join the waitlist for early access updates
+                </label>
+              </div>
+
               {error && <p className="text-red-400 text-sm">{error}</p>}
-              <button type="submit" disabled={loading} className="w-full h-11 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium">
+              <button type="submit" disabled={loading} className="w-full h-11 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                 {loading ? "Submitting..." : "Submit"}
               </button>
             </form>

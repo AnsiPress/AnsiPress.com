@@ -8,9 +8,9 @@ const JWT_SECRET = new TextEncoder().encode(
 );
 
 /**
- * Middleware to protect admin routes
+ * Proxy to protect admin routes
  */
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect /admin/* routes (except /admin/login) and /api/admin/*/client routes
@@ -55,7 +55,7 @@ export async function middleware(request: NextRequest) {
 }
 
 /**
- * Configure which routes the middleware should run on
+ * Configure which routes the proxy should run on
  */
 export const config = {
   matcher: ["/admin/:path*", "/api/admin/:path*/client/:path*"],

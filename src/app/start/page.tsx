@@ -139,13 +139,8 @@ export default function StartPage() {
 
           {tab === "quickstart" && (
             <div>
-              <h2 className="text-xl font-semibold mb-3">Quick Start</h2>
-              <ol className="list-decimal list-inside text-zinc-300 space-y-2">
-                <li>Join the waitlist to receive setup guides.</li>
-                <li>Provision a server (Ubuntu 22.04+ recommended).</li>
-                <li>Install AnsiPress CLI and run initial playbooks.</li>
-                <li>Connect monitoring and backups.</li>
-              </ol>
+              <h2 className="text-xl font-semibold mb-3">We’re getting things ready</h2>
+                This section is being built and will be live soon as part of AnsiPress.
               <p className="text-zinc-500 text-sm mt-4">
                 Detailed docs are coming soon: <a href="/docs" className="text-purple-400 hover:text-purple-300">Documentation</a>
               </p>

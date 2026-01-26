@@ -3,8 +3,10 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { inter, spaceGrotesk } from "@/lib/fonts";
 import "./globals.css";
+import Script from "next/script";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ansipress.com";
+const GA_MEASUREMENT_ID = "G-S47ZELZY7G";
 
 export const metadata: Metadata = {
   title: "AnsiPress - Everything You Need for Modern Hosting",
@@ -69,6 +71,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
+      </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased text-white bg-black`}>
         {children}
         <Analytics />

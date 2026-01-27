@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { verifyAdminPassword, createAdminSession, setAdminCookie } from "@/lib/auth";
 import Link from "next/link";
-import { BrandLogo } from "@/components/ui/brand-logo";
+import { LoginForm } from "@/components/admin/LoginForm";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 // Force dynamic rendering for this page
 export const dynamic = 'force-dynamic';
@@ -19,9 +20,16 @@ export default async function AdminLoginPage({
 
     const password = formData.get("password") as string;
     const redirectPath = formData.get("redirect") as string;
+    const turnstileToken = formData.get("turnstileToken") as string;
 
-    if (!password) {
-      return;
+    if (!password || !turnstileToken) {
+      throw new Error("Missing required fields");
+    }
+
+    // Verify Turnstile token
+    const turnstileResult = await verifyTurnstileToken(turnstileToken);
+    if (!turnstileResult.success) {
+      throw new Error("Security verification failed");
     }
 
     const isValid = await verifyAdminPassword(password);
@@ -30,6 +38,8 @@ export default async function AdminLoginPage({
       const token = await createAdminSession();
       await setAdminCookie(token);
       redirect(redirectPath || "/admin");
+    } else {
+      throw new Error("Invalid password");
     }
   }
 
@@ -45,32 +55,7 @@ export default async function AdminLoginPage({
         </div>
 
         {/* Login Form */}
-        <div className="rounded-lg border border-white/10 bg-white/5 p-8">
-          <form action={handleLogin} className="space-y-6">
-            <input type="hidden" name="redirect" value={redirectTo} />
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                className="w-full h-12 px-4 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                placeholder="Enter admin password"
-                autoFocus
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full h-12 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors"
-            >
-              Sign In
-            </button>
-          </form>
-        </div>
+        <LoginForm action={handleLogin} redirectTo={redirectTo} />
 
         {/* Back to Site */}
         <div className="mt-6 text-center">

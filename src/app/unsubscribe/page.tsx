@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { BrandLogo } from "@/components/ui/brand-logo";
+import Turnstile from "@/components/Turnstile";
 
 function UnsubscribeContent() {
   const searchParams = useSearchParams();
@@ -11,6 +12,8 @@ function UnsubscribeContent() {
   const [message, setMessage] = useState("");
   const [feedback, setFeedback] = useState("");
   const [showFeedback, setShowFeedback] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [errorAtFeedback, setErrorAtFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     const email = searchParams.get("email");
@@ -49,8 +52,14 @@ function UnsubscribeContent() {
 
   const handleFeedbackSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real implementation, you'd send this feedback to your backend
-    console.log("Feedback:", feedback);
+    
+    if (!turnstileToken) {
+      setErrorAtFeedback("Please complete security verification");
+      return;
+    }
+
+    // In a real implementation, you'd send this feedback and token to your backend
+    console.log("Feedback:", feedback, "Turnstile Token:", turnstileToken);
     setShowFeedback(false);
     setMessage("Thank you for your feedback!");
   };
@@ -105,9 +114,24 @@ function UnsubscribeContent() {
                     className="w-full h-24 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
                     placeholder="Your feedback helps us improve..."
                   />
+                  
+                  <div className="flex justify-center my-4">
+                    <Turnstile
+                      onSuccess={(token) => {
+                        setTurnstileToken(token);
+                        setErrorAtFeedback(null);
+                      }}
+                      onError={() => setErrorAtFeedback("Security verification failed")}
+                      onExpire={() => setTurnstileToken(null)}
+                    />
+                  </div>
+
+                  {errorAtFeedback && <p className="text-red-400 text-sm mb-3">{errorAtFeedback}</p>}
+
                   <button
                     type="submit"
-                    className="mt-3 w-full px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors"
+                    disabled={!turnstileToken}
+                    className="mt-3 w-full px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Send Feedback
                   </button>

@@ -11,6 +11,7 @@ This repository (`ansipress.com`) contains the source code for the AnsiPress Man
 - **Deployment**: Vercel
 - **Database/Storage**: Vercel Postgres (Planned)
 - **Analytics**: Vercel Analytics + Speed Insights
+- **Security & Anti-Spam**: Cloudflare Turnstile (Mandatory for all forms)
 - **Security Policy**: 1000% Priority. DO NOT use EOL (End of Life) products. Always verify package maintenance status.
 - **Styling**: Tailwind CSS v4
 - **UI Components**: Shadcn/UI (Radix Primitives + Class Variance Authority)
@@ -24,6 +25,7 @@ This repository (`ansipress.com`) contains the source code for the AnsiPress Man
 - **Deployment**: Vercel
 - **Database/Storage**: Vercel Postgres (Planned)
 - **Analytics**: Vercel Analytics + Speed Insights
+- **Security & Anti-Spam**: Cloudflare Turnstile (Mandatory for all forms)
 - **Security Policy**: 1000% Priority. DO NOT use EOL (End of Life) products. Always verify package maintenance status.
 - **Styling**: Tailwind CSS v4
 - **UI Components**: Shadcn/UI (Radix Primitives + Class Variance Authority)
@@ -48,7 +50,9 @@ This repository (`ansipress.com`) contains the source code for the AnsiPress Man
 - `src/components`: Reusable UI components.
   - `navbar.tsx`, `footer.tsx`: Layout elements.
   - `hero.tsx`, `features.tsx`, `pricing.tsx`: Landing page sections.
+  - `Turnstile.tsx`: Cloudflare Turnstile widget.
 - `src/lib`: Utility functions and shared logic (db, email, auth).
+  - `turnstile.ts`: Server-side Turnstile verification logic.
 
 ## Design Philosophy
 
@@ -74,17 +78,20 @@ This repository (`ansipress.com`) contains the source code for the AnsiPress Man
 **All branding across the site MUST use the exact same gradient styling:**
 
 ### Gradient Specification
+
 - **Tailwind Classes**: `text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400`
 - **Font Weight**: `font-bold`
 - **Letter Spacing**: `tracking-tight`
 - **Display**: `inline-block` (required for gradient rendering on inline elements)
 
 ### Size Usage
+
 - **Navbar** (main site header): `text-xl`
 - **Page Headers** (verify, unsubscribe, start, contact, admin login): `text-4xl`
 - **Admin Dashboard Header**: `text-xl`
 
 ### Pages with Brand Headers
+
 1. [src/components/navbar.tsx](src/components/navbar.tsx) - main brand link
 2. [src/app/admin/layout.tsx](src/app/admin/layout.tsx) - admin header
 3. [src/app/admin/login/page.tsx](src/app/admin/login/page.tsx) - admin login page
@@ -94,17 +101,53 @@ This repository (`ansipress.com`) contains the source code for the AnsiPress Man
 7. [src/app/unsubscribe/page.tsx](src/app/unsubscribe/page.tsx) - unsubscribe page
 
 ### Implementation Rules
+
 - **DO NOT** use `BrandLogo` component for page headers (due to inheritance issues).
 - **DO** hardcode the gradient styling directly on `<h1>` or heading elements.
 - **Ensure** full text shows gradient end-to-end.
 - **Never** split branding text with separate color spans.
 
 ### Example - Correct Branding
+
 ```tsx
 <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
   AnsiPress
 </h1>
 ```
+
+## Security & Anti-Spam (Turnstile)
+
+Cloudflare Turnstile is the **default and mandatory** security mechanism for all public-facing and administrative forms to prevent spam and bot submissions.
+
+### Protected Forms
+
+- **Waitlist Signup**: `src/components/hero.tsx`, `src/components/migration-section.tsx`, `src/app/start/page.tsx`
+- **Enterprise Contact**: `src/app/contact/page.tsx`
+- **Admin Login**: `src/app/admin/login/page.tsx`
+- **Unsubscribe Feedback**: `src/app/unsubscribe/page.tsx`
+
+### Frontend Implementation
+
+- Use the `Turnstile` component from `src/components/Turnstile.tsx`.
+- Pass a callback to `onSuccess` to receive the `turnstileToken`.
+- Store the token in the form state and include it in the API request body or Server Action `formData`.
+
+### Backend Verification
+
+- Use `verifyTurnstileToken` from `src/lib/turnstile.ts` in API routes and Server Actions.
+- The `turnstileToken` should be part of the request validation schema (e.g., using Zod).
+- If verification fails, return a `403 Forbidden` response or throw an error in Server Actions.
+
+### Environment Variables
+
+- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: Public key for the widget.
+- `TURNSTILE_SECRET_KEY`: Private key for server-side verification.
+
+### Future AI Instructions
+
+- **Whenever creating or updating a form**, always include Cloudflare Turnstile by default.
+- Ensure the API route or Server Action corresponding to the form validates the `turnstileToken`.
+- Maintain the "dark" theme for the Turnstile widget to match the site's aesthetic.
 
 ## Roadmap / Future Features
 

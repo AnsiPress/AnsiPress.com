@@ -2,155 +2,102 @@
 
 ## Overview
 
-This repository (`ansipress.com`) contains the source code for the AnsiPress Managed Hosting landing page. It is a modern Next.js application designed to showcase the power and speed of the AnsiPress hosting stack.
+This repository (`ansipress.com`) is the public-facing landing page and administrative dashboard for **AnsiPress Managed Hosting**. It showcases high-performance hosting powered by Ansible, ZFS, and CrowdSec.
 
-## Architecture
+## Core Mission
+- **Convert Visitors**: High-intent Managed WordPress Hosting seekers.
+- **Manage Operations**: Admin dashboard for waitlist and lead management.
+- **Orchestration**: Planned integration with a Go (Gin/Fiber) API to trigger Ansible playbooks in the `AnsiPress` core repository.
 
-- **Orchestration Layer (Planned)**: Go (Golang) using Gin or Fiber framework. This API will trigger Ansible playbooks from AnsiPress repo ( check `AnsiPress/.agent/AI_CONTEXT.md` for details).
-- **Frontend**: Next.js 16.1 (App Router)
-- **Deployment**: Vercel
-- **Database/Storage**: Vercel Postgres (Planned)
-- **Analytics**: Vercel Analytics + Speed Insights
-- **Security & Anti-Spam**: Cloudflare Turnstile (Mandatory for all forms)
-- **Security Policy**: 1000% Priority. DO NOT use EOL (End of Life) products. Always verify package maintenance status.
-- **Styling**: Tailwind CSS v4
-- **UI Components**: Shadcn/UI (Radix Primitives + Class Variance Authority)
+---
+
+## Tech Stack (v2026)
+
+- **Frontend**: Next.js 16.1.4 (App Router)
+- **Styling**: Tailwind CSS v4 (Modern CSS-first approach)
+- **Database**: Vercel/Neon Postgres via **Drizzle ORM**
+- **Authentication**: Custom JWT-based Admin Sessions (`jose` + `bcryptjs`)
+- **Security & Bot Protection**: Cloudflare Turnstile (Mandatory for all forms)
+- **Email**: Resend with React Email templates
+- **Analytics**: Vercel Analytics + Vercel Speed Insights
+- **UI Components**: Shadcn UI (Radix Primitives + CVA)
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
-- **Language**: TypeScript
 
-## Tech Stack
-
-- **Framework**: Next.js 16.1 (App Router)
-- **Deployment**: Vercel
-- **Database/Storage**: Vercel Postgres (Planned)
-- **Analytics**: Vercel Analytics + Speed Insights
-- **Security & Anti-Spam**: Cloudflare Turnstile (Mandatory for all forms)
-- **Security Policy**: 1000% Priority. DO NOT use EOL (End of Life) products. Always verify package maintenance status.
-- **Styling**: Tailwind CSS v4
-- **UI Components**: Shadcn/UI (Radix Primitives + Class Variance Authority)
-- **Icons**: Lucide React
-- **Animations**: Framer Motion
-- **Language**: TypeScript
+---
 
 ## Project Structure
 
-- `src/app`: App Router pages.
-  - `page.tsx`: Main landing page.
-  - `layout.tsx`: Root layout.
-  - `globals.css`: Global styles.
-  - `admin/`: Admin dashboard pages (Waitlist, Enterprise Contacts).
-  - `contact/`: Enterprise contact form page.
-  - `start/`: Unified onboarding flow (Waitlist, Sign In, Quick Start).
-  - `verify/`: Email verification page.
-  - `unsubscribe/`: Unsubscribe page.
-  - `demo/`: Demo page (ComingSoon).
-  - `docs/`: Documentation (ComingSoon).
-  - `login/`: Admin login page.
-- `src/components`: Reusable UI components.
-  - `navbar.tsx`, `footer.tsx`: Layout elements.
-  - `hero.tsx`, `features.tsx`, `pricing.tsx`: Landing page sections.
-  - `Turnstile.tsx`: Cloudflare Turnstile widget.
-- `src/lib`: Utility functions and shared logic (db, email, auth).
-  - `turnstile.ts`: Server-side Turnstile verification logic.
+- `src/app/`: The heart of the application.
+  - `(public)`: `page.tsx`, `start/`, `contact/`, `verify/`, `unsubscribe/`, `about/`, `terms/`, `privacy/`.
+  - `admin/`: Protected administrative dashboard.
+  - `api/`: Backend endpoints (`waitlist`, `contact`, `unsubscribe`, etc.).
+  - `login/`: Admin login gateway.
+- `src/components/`: Modular UI sections.
+  - `hero.tsx`, `features.tsx`, `pricing.tsx`, `tech-specs.tsx`.
+  - `Turnstile.tsx`: Standard widget for security.
+- `src/lib/`: Shared utilities.
+  - `db/schema.ts`: Drizzle table definitions.
+  - `auth.ts`: Password verification and JWT session management.
+  - `turnstile.ts`: Server-side token validation logic.
+  - `email/`: Notification dispatch logic.
 
-## Design Philosophy
+---
 
-- **Aesthetic**: Premium, dark mode, vibrant colors, glassmorphism.
-- **Goal**: Convert visitors interested in high-performance Managed WordPress Hosting.
+## UI/UX Guidelines (CRITICAL)
 
-## Pages Inventory
+### 1. Aesthetic
+- **Dark Mode First**: `bg-black`, `text-white`, `selection:bg-purple-500/30`.
+- **Glassmorphism**: Use `bg-white/5`, `backdrop-blur-sm`, and `border-white/10`.
 
-- Top-level routes in `src/app`:
-  - `/` (landing) → Main product showcase.
-  - `/start` (Get Started) → Unified Join Waitlist / Sign In / Quick Start.
-  - `/contact` (Contact) → Enterprise inquiry form.
-  - `/verify` (Verification) → Email verification flow.
-  - `/unsubscribe` (Opt-out) → Newsletter/Waitlist opt-out.
-  - `/admin` (Manage) → Waitlist and Contact management.
-  - `/docs` (ComingSoon).
-  - `/demo` (ComingSoon).
-- Admin area: `/admin` with `waitlist`, `contacts`, stats, charts.
-- API routes: `/api/waitlist`, `/api/verify`, `/api/unsubscribe`, `/api/contact`, plus admin endpoints.
-
-## Brand Guidelines (CRITICAL - 100% Consistency Required)
-
-**All branding across the site MUST use the exact same gradient styling:**
-
-### Gradient Specification
-
+### 2. Branding & Gradients
+Every mention of "AnsiPress" or key headers MUST use the official gradient:
 - **Tailwind Classes**: `text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400`
-- **Font Weight**: `font-bold`
-- **Letter Spacing**: `tracking-tight`
-- **Display**: `inline-block` (required for gradient rendering on inline elements)
+- **Weight**: `font-bold tracking-tight`
+- **Render Rule**: Must be an `inline-block` for the gradient to display properly on headings.
 
-### Size Usage
+### 3. Typography
+- **Primary**: Inter (Variable)
+- **Header Accents**: Space Grotesk (Variable)
 
-- **Navbar** (main site header): `text-xl`
-- **Page Headers** (verify, unsubscribe, start, contact, admin login): `text-4xl`
-- **Admin Dashboard Header**: `text-xl`
+---
 
-### Pages with Brand Headers
+## Security Protocols (Turnstile)
 
-1. [src/components/navbar.tsx](src/components/navbar.tsx) - main brand link
-2. [src/app/admin/layout.tsx](src/app/admin/layout.tsx) - admin header
-3. [src/app/admin/login/page.tsx](src/app/admin/login/page.tsx) - admin login page
-4. [src/app/start/page.tsx](src/app/start/page.tsx) - unified onboarding page
-5. [src/app/contact/page.tsx](src/app/contact/page.tsx) - enterprise contact page
-6. [src/app/verify/page.tsx](src/app/verify/page.tsx) - email verification page
-7. [src/app/unsubscribe/page.tsx](src/app/unsubscribe/page.tsx) - unsubscribe page
+Cloudflare Turnstile is the **default and mandatory** security mechanism.
 
-### Implementation Rules
+### Mandatory Protection Checklist:
+1. **Frontend**: Add `<Turnstile onSuccess={...} />` to every form. Disable submit until token is received.
+2. **Backend**: Validate the token using `verifyTurnstileToken(token)` in API routes or Server Actions before processing data.
+3. **Theming**: Always use the `dark` theme for the widget.
 
-- **DO NOT** use `BrandLogo` component for page headers (due to inheritance issues).
-- **DO** hardcode the gradient styling directly on `<h1>` or heading elements.
-- **Ensure** full text shows gradient end-to-end.
-- **Never** split branding text with separate color spans.
+### Current Protected Paths:
+- Waitlist (`/`, `/start`)
+- Migration Form (`/`)
+- Enterprise Contact (`/contact`)
+- Admin Login (`/admin/login`)
+- Unsubscribe Feedback (`/unsubscribe`)
 
-### Example - Correct Branding
+---
 
-```tsx
-<h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-  AnsiPress
-</h1>
-```
+## Data Model (Drizzle)
 
-## Security & Anti-Spam (Turnstile)
+### `waitlist`
+Stores user signups for the service. Includes UTM tracking and verification status.
 
-Cloudflare Turnstile is the **default and mandatory** security mechanism for all public-facing and administrative forms to prevent spam and bot submissions.
+### `enterprise_contacts`
+High-value leads for managed migration and specialized hosting needs.
 
-### Protected Forms
+### `email_logs`
+Audit trail of system notifications sent via Resend.
 
-- **Waitlist Signup**: `src/components/hero.tsx`, `src/components/migration-section.tsx`, `src/app/start/page.tsx`
-- **Enterprise Contact**: `src/app/contact/page.tsx`
-- **Admin Login**: `src/app/admin/login/page.tsx`
-- **Unsubscribe Feedback**: `src/app/unsubscribe/page.tsx`
+---
 
-### Frontend Implementation
+## Future AI Instructions
 
-- Use the `Turnstile` component from `src/components/Turnstile.tsx`.
-- Pass a callback to `onSuccess` to receive the `turnstileToken`.
-- Store the token in the form state and include it in the API request body or Server Action `formData`.
-
-### Backend Verification
-
-- Use `verifyTurnstileToken` from `src/lib/turnstile.ts` in API routes and Server Actions.
-- The `turnstileToken` should be part of the request validation schema (e.g., using Zod).
-- If verification fails, return a `403 Forbidden` response or throw an error in Server Actions.
-
-### Environment Variables
-
-- `NEXT_PUBLIC_TURNSTILE_SITE_KEY`: Public key for the widget.
-- `TURNSTILE_SECRET_KEY`: Private key for server-side verification.
-
-### Future AI Instructions
-
-- **Whenever creating or updating a form**, always include Cloudflare Turnstile by default.
-- Ensure the API route or Server Action corresponding to the form validates the `turnstileToken`.
-- Maintain the "dark" theme for the Turnstile widget to match the site's aesthetic.
-
-## Roadmap / Future Features
-
-- **Lead Generation**: "Check your site speed" interactive tools.
-- **Vulnerability scanning**: Highlight scanning capabilities.
-- **Monitoring Integration**: Display basic server stats if applicable.
+- **When adding a new form**: You MUST include the Turnstile widget and implement server-side verification.
+- **When modifying UI**: Follow the "Premium Dark" aesthetic. Avoid generic colors; stick to the purple-to-blue palette.
+- **When adding routes**: Prefer App Router (React Server Components). Use Server Actions for administrative mutations.
+- **Consistency**: Refer to `src/app/layout.tsx` for metadata/SEO standards and `src/components/navbar.tsx` for branding implementation.
+- **Security**: 1000% Priority. Never expose sensitive logic. Always use `jose` for session validation on `/admin` routes.
+- **Maintenance**: Check `package.json` for current versions; never use EOL libraries.

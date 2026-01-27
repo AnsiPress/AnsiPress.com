@@ -5,6 +5,7 @@ import { waitlist } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { sendWelcomeEmail, sendAdminNotification } from "@/lib/email/send";
 import { checkIpRateLimit, checkEmailRateLimit } from "@/lib/rate-limit";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 import { randomUUID } from "crypto";
 
 /**
@@ -19,6 +20,7 @@ const waitlistSchema = z.object({
   utmSource: z.string().optional(),
   utmMedium: z.string().optional(),
   utmCampaign: z.string().optional(),
+  turnstileToken: z.string().optional(),
 });
 
 /**
@@ -57,6 +59,17 @@ export async function POST(request: NextRequest) {
     }
 
     const data = validation.data;
+
+    // Verify Turnstile token if provided
+    if (data.turnstileToken) {
+      const turnstileResult = await verifyTurnstileToken(data.turnstileToken);
+      if (!turnstileResult.success) {
+        return NextResponse.json(
+          { error: "Security verification failed. Please try again." },
+          { status: 403 }
+        );
+      }
+    }
 
     // Get IP address and User-Agent
     const ipAddress = getClientIp(request);

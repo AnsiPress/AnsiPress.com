@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent, useEffect } from "react";
+import Turnstile from "@/components/Turnstile";
 
 type Tab = "waitlist" | "signin" | "quickstart";
 
@@ -10,6 +11,7 @@ export default function StartPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const getUtmParams = () => {
     if (typeof window === "undefined") return {} as Record<string, string | undefined>;
@@ -25,6 +27,12 @@ export default function StartPage() {
   const handleWaitlistSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email) return;
+    
+    if (!turnstileToken) {
+      setError("Please complete the security verification");
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     try {
@@ -32,7 +40,7 @@ export default function StartPage() {
       const response = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, ...utmParams }),
+        body: JSON.stringify({ email, turnstileToken, ...utmParams }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Failed to join waitlist");
@@ -103,24 +111,33 @@ export default function StartPage() {
                   <p className="text-green-400 font-medium">✓ Check your email to confirm!</p>
                 </div>
               ) : (
-                <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row items-center gap-4">
-                  <input
-                    type="email"
-                    placeholder="hello@ansipress.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={loading}
-                    required
-                    className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="h-12 px-8 rounded-full bg-white text-black font-medium hover:bg-white/90 transition-colors disabled:opacity-50"
-                  >
-                    {loading ? "Joining..." : "Join Waitlist"}
-                  </button>
-                </form>
+                <div className="space-y-4">
+                  <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row items-center gap-4">
+                    <input
+                      type="email"
+                      placeholder="hello@ansipress.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
+                      required
+                      className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+                    />
+                    <button
+                      type="submit"
+                      disabled={loading || !turnstileToken}
+                      className="h-12 px-8 rounded-full bg-white text-black font-medium hover:bg-white/90 transition-colors disabled:opacity-50"
+                    >
+                      {loading ? "Joining..." : "Join Waitlist"}
+                    </button>
+                  </form>
+                  <div className="flex justify-center">
+                    <Turnstile
+                      onSuccess={(token) => setTurnstileToken(token)}
+                      onError={() => setError("Security verification failed. Please try again.")}
+                      onExpire={() => setTurnstileToken(null)}
+                    />
+                  </div>
+                </div>
               )}
               {error && <p className="text-red-400 text-sm mt-4">{error}</p>}
             </div>

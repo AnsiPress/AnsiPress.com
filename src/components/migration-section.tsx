@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Turnstile from "@/components/Turnstile";
 
 export function MigrationSection() {
   const [formData, setFormData] = useState({
@@ -12,9 +13,15 @@ export function MigrationSection() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    if (!turnstileToken) {
+      setError("Please complete the security verification");
+      return;
+    }
     
     setLoading(true);
     setError(null);
@@ -27,6 +34,7 @@ export function MigrationSection() {
         },
         body: JSON.stringify({
           ...formData,
+          turnstileToken,
           referralSource: "migration_customer",
         }),
       });
@@ -133,13 +141,21 @@ export function MigrationSection() {
                 </div>
               </div>
 
+              <div className="flex justify-center">
+                <Turnstile
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onError={() => setError("Security verification failed. Please try again.")}
+                  onExpire={() => setTurnstileToken(null)}
+                />
+              </div>
+
               {error && (
                 <p className="text-red-400 text-sm">{error}</p>
               )}
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !turnstileToken}
                 className="w-full h-12 rounded-lg bg-white text-black font-medium hover:bg-white/90 transition-colors disabled:opacity-50"
               >
                 {loading ? "Submitting..." : "Get Free Migration Plan"}

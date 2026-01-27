@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Turnstile from "@/components/Turnstile";
 
 export default function ContactPage() {
   const [form, setForm] = useState({
@@ -16,6 +17,7 @@ export default function ContactPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [waitlistAdded, setWaitlistAdded] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -24,6 +26,12 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    if (!turnstileToken) {
+      setError("Please complete the security verification");
+      return;
+    }
+    
     setLoading(true);
     setError(null);
 
@@ -36,6 +44,7 @@ export default function ContactPage() {
         website: form.website || undefined,
         useCase: form.useCase || undefined,
         message: form.message,
+        turnstileToken,
         utmSource: utmParams.get("utm_source") || undefined,
         utmMedium: utmParams.get("utm_medium") || undefined,
         utmCampaign: utmParams.get("utm_campaign") || undefined,
@@ -162,8 +171,16 @@ export default function ContactPage() {
                 </label>
               </div>
 
+              <div className="flex justify-center py-2">
+                <Turnstile
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onError={() => setError("Security verification failed. Please try again.")}
+                  onExpire={() => setTurnstileToken(null)}
+                />
+              </div>
+
               {error && <p className="text-red-400 text-sm">{error}</p>}
-              <button type="submit" disabled={loading} className="w-full h-11 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              <button type="submit" disabled={loading || !turnstileToken} className="w-full h-11 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                 {loading ? "Submitting..." : "Submit"}
               </button>
             </form>

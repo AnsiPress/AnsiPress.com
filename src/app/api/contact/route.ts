@@ -2,14 +2,25 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { enterpriseContacts } from "@/lib/db/schema";
 import { sendEnterpriseContactNotification } from "@/lib/email/send";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, company, website, useCase, message, utmSource, utmMedium, utmCampaign, referralSource } = body;
+    const { name, email, company, website, useCase, message, turnstileToken, utmSource, utmMedium, utmCampaign, referralSource } = body;
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Verify Turnstile token
+    if (!turnstileToken) {
+      return NextResponse.json({ error: "Security verification required" }, { status: 400 });
+    }
+
+    const turnstileResult = await verifyTurnstileToken(turnstileToken);
+    if (!turnstileResult.success) {
+      return NextResponse.json({ error: "Security verification failed. Please try again." }, { status: 403 });
     }
 
     const inserted = await db

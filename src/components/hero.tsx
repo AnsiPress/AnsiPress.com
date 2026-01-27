@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { MoveRight } from "lucide-react";
+import Turnstile from "@/components/Turnstile";
 
 const terminalCommands = [
   "ansible-playbook -i inventory main.yml",
@@ -16,6 +17,7 @@ export function Hero() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   // Typing effect
   useEffect(() => {
@@ -56,6 +58,11 @@ export function Hero() {
     
     if (!email) return;
     
+    if (!turnstileToken) {
+      setError("Please complete the security verification");
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     
@@ -69,6 +76,7 @@ export function Hero() {
         },
         body: JSON.stringify({
           email,
+          turnstileToken,
           ...utmParams,
         }),
       });
@@ -135,25 +143,32 @@ export function Hero() {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-md">
-            <input
-              type="email"
-              placeholder="hello@ansipress.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={loading}
-              required
-              className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+          <div className="flex flex-col items-center gap-4 w-full max-w-md">
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-4 w-full">
+              <input
+                type="email"
+                placeholder="hello@ansipress.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                required
+                className="flex-1 h-12 px-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={loading || !turnstileToken}
+                className="h-12 px-8 rounded-full bg-white text-black font-medium inline-flex items-center gap-2 hover:bg-white/90 transition-colors disabled:opacity-50"
+              >
+                {loading ? "Joining..." : "Join Waitlist"}
+                <MoveRight className="w-4 h-4" />
+              </button>
+            </form>
+            <Turnstile
+              onSuccess={(token) => setTurnstileToken(token)}
+              onError={() => setError("Security verification failed. Please try again.")}
+              onExpire={() => setTurnstileToken(null)}
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="h-12 px-8 rounded-full bg-white text-black font-medium inline-flex items-center gap-2 hover:bg-white/90 transition-colors disabled:opacity-50"
-            >
-              {loading ? "Joining..." : "Join Waitlist"}
-              <MoveRight className="w-4 h-4" />
-            </button>
-          </form>
+          </div>
         )}
 
         {error && (

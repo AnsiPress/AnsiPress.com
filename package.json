@@ -44,7 +44,7 @@
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9",
-    "eslint-config-next": "16.1.5",
+    "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"

@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { MoveRight } from "lucide-react";
 import Turnstile from "@/components/Turnstile";
+import StatusBadge from "@/components/StatusBadge"
 
 const terminalCommands = [
   "ansible-playbook -i inventory main.yml",
@@ -104,12 +105,8 @@ export function Hero() {
 
       <div className="container relative z-10 flex flex-col items-center text-center">
         {/* Status Badge */}
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-purple-300 mb-8">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-          </span>
-          All Systems Operational
+        <div className="mb-8">
+          <StatusBadge />
         </div>
 
         <h1 className="max-w-4xl text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">

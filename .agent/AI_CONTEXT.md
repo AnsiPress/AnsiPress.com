@@ -5,6 +5,7 @@
 This repository (`ansipress.com`) is the public-facing landing page and administrative dashboard for **AnsiPress Managed Hosting**. It showcases high-performance hosting powered by Ansible, ZFS, and CrowdSec.
 
 ## Core Mission
+
 - **Convert Visitors**: High-intent Managed WordPress Hosting seekers.
 - **Manage Operations**: Admin dashboard for waitlist and lead management.
 - **Orchestration**: Planned integration with a Go (Gin/Fiber) API to trigger Ansible playbooks in the `AnsiPress` core repository.
@@ -33,9 +34,11 @@ This repository (`ansipress.com`) is the public-facing landing page and administ
   - `admin/`: Protected administrative dashboard.
   - `api/`: Backend endpoints (`waitlist`, `contact`, `unsubscribe`, etc.).
   - `login/`: Admin login gateway.
+
 - `src/components/`: Modular UI sections.
   - `hero.tsx`, `features.tsx`, `pricing.tsx`, `tech-specs.tsx`.
   - `Turnstile.tsx`: Standard widget for security.
+
 - `src/lib/`: Shared utilities.
   - `db/schema.ts`: Drizzle table definitions.
   - `auth.ts`: Password verification and JWT session management.
@@ -44,19 +47,34 @@ This repository (`ansipress.com`) is the public-facing landing page and administ
 
 ---
 
+## Monitoring & Status
+
+We use a self-hosted **Uptime Kuma** instance for service health monitoring.
+- **Status Page**: `https://status.ansipress.com/status/ansipress`
+- **Proxy**: `/api/status` (Next.js route)
+- **Source API**: `https://status.ansipress.com/api/status-page/ansipress`
+- **Caching**: 30-second server-side revalidation cache.
+- **Frontend**: `<StatusBadge />` in `hero.tsx` displays real-time health (60s poll).
+
+---
+
 ## UI/UX Guidelines (CRITICAL)
 
 ### 1. Aesthetic
+
 - **Dark Mode First**: `bg-black`, `text-white`, `selection:bg-purple-500/30`.
 - **Glassmorphism**: Use `bg-white/5`, `backdrop-blur-sm`, and `border-white/10`.
 
 ### 2. Branding & Gradients
+
 Every mention of "AnsiPress" or key headers MUST use the official gradient:
+
 - **Tailwind Classes**: `text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400`
 - **Weight**: `font-bold tracking-tight`
 - **Render Rule**: Must be an `inline-block` for the gradient to display properly on headings.
 
 ### 3. Typography
+
 - **Primary**: Inter (Variable)
 - **Header Accents**: Space Grotesk (Variable)
 
@@ -66,29 +84,34 @@ Every mention of "AnsiPress" or key headers MUST use the official gradient:
 
 Cloudflare Turnstile is the **default and mandatory** security mechanism.
 
-### Mandatory Protection Checklist:
+### Mandatory Protection Checklist
+
 1. **Frontend**: Add `<Turnstile onSuccess={...} />` to every form. Disable submit until token is received.
 2. **Backend**: Validate the token using `verifyTurnstileToken(token)` in API routes or Server Actions before processing data.
 3. **Theming**: Always use the `dark` theme for the widget.
 
-### Current Protected Paths:
-- Waitlist (`/`, `/start`)
-- Migration Form (`/`)
-- Enterprise Contact (`/contact`)
-- Admin Login (`/admin/login`)
-- Unsubscribe Feedback (`/unsubscribe`)
+### Current Protected Paths
+
+1. Waitlist (`/`, `/start`)
+2. Migration Form (`/`)
+3. Enterprise Contact (`/contact`)
+4. Admin Login (`/admin/login`)
+5. Unsubscribe Feedback (`/unsubscribe`)
 
 ---
 
 ## Data Model (Drizzle)
 
 ### `waitlist`
+
 Stores user signups for the service. Includes UTM tracking and verification status.
 
 ### `enterprise_contacts`
+
 High-value leads for managed migration and specialized hosting needs.
 
 ### `email_logs`
+
 Audit trail of system notifications sent via Resend.
 
 ---

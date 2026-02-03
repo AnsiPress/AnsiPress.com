@@ -33,7 +33,7 @@ export default function StatusBadge() {
 
         // 1. Prioritize Incidents (Critical - Red)
         if (incident) {
-          setStatus(`${incident.name}`)
+          setStatus(`${incident.title}`)
           setColor("bg-red-500")
           return
         }

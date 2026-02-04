@@ -24,6 +24,7 @@ This repository (`ansipress.com`) is the public-facing landing page and administ
 - **UI Components**: Shadcn UI (Radix Primitives + CVA)
 - **Icons**: Lucide React
 - **Animations**: Framer Motion
+- **Error Tracking**: **Sentry** (Full-stack integration)
 
 ---
 
@@ -50,11 +51,18 @@ This repository (`ansipress.com`) is the public-facing landing page and administ
 ## Monitoring & Status
 
 We use a self-hosted **Uptime Kuma** instance for service health monitoring.
+
 - **Status Page**: `https://status.ansipress.com`
 - **Proxy**: `/api/status` (Next.js route)
 - **Source API**: `https://status.ansipress.com/api/status-page/ansipress`
 - **Caching**: 30-second server-side revalidation cache.
 - **Frontend**: `<StatusBadge />` in `hero.tsx` displays real-time health (60s poll).
+
+We use **Sentry** for error tracking and performance monitoring.
+
+- **Scope**: Client-side, Server-side, and Edge runtime.
+- **Configuration**: `sentry.server.config.ts`, `sentry.edge.config.ts`, `src/instrumentation.ts`, `src/instrumentation-client.ts`, and `src/app/global-error.tsx`.
+- **Workflow**: Source maps are automatically uploaded during build/CI.
 
 ---
 

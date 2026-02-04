@@ -90,7 +90,7 @@ export default function StatusBadge() {
 
   return (
     <Link 
-      href="https://status.ansipress.com/status/ansipress" 
+      href="https://status.ansipress.com/" 
       target="_blank"
       rel="noopener noreferrer"
       className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-purple-300 transition-colors hover:bg-white/10 hover:border-white/20"

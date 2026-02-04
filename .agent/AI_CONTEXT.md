@@ -50,7 +50,7 @@ This repository (`ansipress.com`) is the public-facing landing page and administ
 ## Monitoring & Status
 
 We use a self-hosted **Uptime Kuma** instance for service health monitoring.
-- **Status Page**: `https://status.ansipress.com/status/ansipress`
+- **Status Page**: `https://status.ansipress.com`
 - **Proxy**: `/api/status` (Next.js route)
 - **Source API**: `https://status.ansipress.com/api/status-page/ansipress`
 - **Caching**: 30-second server-side revalidation cache.

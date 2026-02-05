@@ -13,7 +13,7 @@
     "db:seed": "tsx src/lib/db/seed.ts"
   },
   "dependencies": {
-    "@marsidev/react-turnstile": "^1.4.1",
+    "@marsidev/react-turnstile": "^1.4.2",
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-slot": "^1.2.4",
     "@react-email/components": "^1.0.6",

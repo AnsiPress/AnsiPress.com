@@ -37,8 +37,11 @@ This repository (`ansipress.com`) is the public-facing landing page and administ
   - `login/`: Admin login gateway.
 
 - `src/components/`: Modular UI sections.
-  - `hero.tsx`, `features.tsx`, `pricing.tsx`, `tech-specs.tsx`.
+  - `hero.tsx`, `features.tsx`, `pricing.tsx`, `tech-specs.tsx`, `migration-section.tsx`.
   - `Turnstile.tsx`: Standard widget for security.
+  - `ui/`: Shared UI primitives.
+    - `gradient-text.tsx`: Reusable animated gradient text.
+    - `brand-logo.tsx`: Standardized brand logo component.
 
 - `src/lib/`: Shared utilities.
   - `db/schema.ts`: Drizzle table definitions.
@@ -75,11 +78,15 @@ We use **Sentry** for error tracking and performance monitoring.
 
 ### 2. Branding & Gradients
 
-Every mention of "AnsiPress" or key headers MUST use the official gradient:
+Every mention of "AnsiPress" or key headers MUST use the official animated gradient. Use the provided components instead of manual classes whenever possible:
 
-- **Tailwind Classes**: `text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400`
+- **Components**:
+  - `<BrandLogo size="sm|md|lg" />`: For the brand name "AnsiPress".
+  - `<GradientText as="h1|h2|span">`: For any animated gradient headline.
+- **Core Animation**: `animate-gradient` (8-second flow).
+- **Tailwind Classes** (underlying): `text-transparent bg-clip-text bg-linear-to-r from-purple-400 via-pink-400 to-blue-400 bg-[length:200%_auto]`.
 - **Weight**: `font-bold tracking-tight`
-- **Render Rule**: Must be an `inline-block` for the gradient to display properly on headings.
+- **Render Rule**: Must be an `inline-block` for the gradient to display properly.
 
 ### 3. Typography
 

@@ -138,4 +138,5 @@ Audit trail of system notifications sent via Resend.
 - **When adding routes**: Prefer App Router (React Server Components). Use Server Actions for administrative mutations.
 - **Consistency**: Refer to `src/app/layout.tsx` for metadata/SEO standards and `src/components/navbar.tsx` for branding implementation.
 - **Security**: 1000% Priority. Never expose sensitive logic. Always use `jose` for session validation on `/admin` routes.
+- **Best Practices**: You MUST follow the `next-best-practices` skill instructions. Refer to `.agent/skills/next-best-practices/SKILL.md` for standards on RSC, data patterns, and optimization.
 - **Maintenance**: Check `package.json` for current versions; never use EOL libraries.

@@ -14,42 +14,64 @@ export const dynamic = 'force-dynamic';
  */
 async function getStats() {
   try {
-    // Total signups
-    const [totalSignups] = await db
-      .select({ count: count() })
-      .from(waitlist);
-
-    // Verified emails
-    const [verifiedEmails] = await db
-      .select({ count: count() })
-      .from(waitlist)
-      .where(eq(waitlist.emailVerified, true));
-
-    // Today's signups
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const [todaySignups] = await db
-      .select({ count: count() })
-      .from(waitlist)
-      .where(gte(waitlist.createdAt, today));
 
-    // Last 7 days signups for growth calculation
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const [last7DaysSignups] = await db
-      .select({ count: count() })
-      .from(waitlist)
-      .where(gte(waitlist.createdAt, sevenDaysAgo));
 
-    // Previous 7 days signups for comparison
     const fourteenDaysAgo = new Date();
     fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-    const [previous7DaysSignups] = await db
-      .select({ count: count() })
-      .from(waitlist)
-      .where(
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Parallelize all independent database queries
+    const [
+      [totalSignups],
+      [verifiedEmails],
+      [todaySignups],
+      [last7DaysSignups],
+      [previous7DaysSignups],
+      signupsByDay,
+      topReferralSources,
+      [totalEmailsSent],
+      [deliveredEmails],
+      [openedEmails],
+      [totalEnterpriseContacts],
+      [enterpriseThisWeek],
+      [enterpriseLastWeek],
+      [enterpriseThisMonth],
+    ] = await Promise.all([
+      db.select({ count: count() }).from(waitlist),
+      db.select({ count: count() }).from(waitlist).where(eq(waitlist.emailVerified, true)),
+      db.select({ count: count() }).from(waitlist).where(gte(waitlist.createdAt, today)),
+      db.select({ count: count() }).from(waitlist).where(gte(waitlist.createdAt, sevenDaysAgo)),
+      db.select({
+        count: count(),
+      }).from(waitlist).where(
         sql`${waitlist.createdAt} >= ${fourteenDaysAgo} AND ${waitlist.createdAt} < ${sevenDaysAgo}`
-      );
+      ),
+      db.select({
+        date: sql<string>`DATE(${waitlist.createdAt})`,
+        count: count(),
+      }).from(waitlist).where(gte(waitlist.createdAt, thirtyDaysAgo)).groupBy(sql`DATE(${waitlist.createdAt})`).orderBy(sql`DATE(${waitlist.createdAt})`),
+      db.select({
+        source: waitlist.referralSource,
+        count: count(),
+      }).from(waitlist).groupBy(waitlist.referralSource).orderBy(desc(count())).limit(10),
+      db.select({ count: count() }).from(emailLogs),
+      db.select({ count: count() }).from(emailLogs).where(eq(emailLogs.status, "delivered")),
+      db.select({ count: count() }).from(emailLogs).where(eq(emailLogs.status, "opened")),
+      db.select({ count: count() }).from(enterpriseContacts),
+      db.select({ count: count() }).from(enterpriseContacts).where(gte(enterpriseContacts.createdAt, sevenDaysAgo)),
+      db.select({
+        count: count(),
+      }).from(enterpriseContacts).where(
+        sql`${enterpriseContacts.createdAt} >= ${fourteenDaysAgo} AND ${enterpriseContacts.createdAt} < ${sevenDaysAgo}`
+      ),
+      db.select({ count: count() }).from(enterpriseContacts).where(gte(enterpriseContacts.createdAt, thirtyDaysAgo)),
+    ]);
 
     // Calculate 7-day growth percentage
     const last7Count = last7DaysSignups?.count || 0;
@@ -58,46 +80,7 @@ async function getStats() {
       ? ((last7Count - prev7Count) / prev7Count) * 100 
       : 0;
 
-    // Signups by day (last 30 days)
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
-    const signupsByDay = await db
-      .select({
-        date: sql<string>`DATE(${waitlist.createdAt})`,
-        count: count(),
-      })
-      .from(waitlist)
-      .where(gte(waitlist.createdAt, thirtyDaysAgo))
-      .groupBy(sql`DATE(${waitlist.createdAt})`)
-      .orderBy(sql`DATE(${waitlist.createdAt})`);
-
-    // Top referral sources
-    const topReferralSources = await db
-      .select({
-        source: waitlist.referralSource,
-        count: count(),
-      })
-      .from(waitlist)
-      .groupBy(waitlist.referralSource)
-      .orderBy(desc(count()))
-      .limit(10);
-
     // Email delivery stats
-    const [totalEmailsSent] = await db
-      .select({ count: count() })
-      .from(emailLogs);
-
-    const [deliveredEmails] = await db
-      .select({ count: count() })
-      .from(emailLogs)
-      .where(eq(emailLogs.status, "delivered"));
-
-    const [openedEmails] = await db
-      .select({ count: count() })
-      .from(emailLogs)
-      .where(eq(emailLogs.status, "opened"));
-
     const totalEmails = totalEmailsSent?.count || 0;
     const deliveredCount = deliveredEmails?.count || 0;
     const openedCount = openedEmails?.count || 0;
@@ -106,27 +89,6 @@ async function getStats() {
     const openRate = totalEmails > 0 ? (openedCount / totalEmails) * 100 : 0;
 
     // Enterprise contact stats
-    const [totalEnterpriseContacts] = await db
-      .select({ count: count() })
-      .from(enterpriseContacts);
-
-    const [enterpriseThisWeek] = await db
-      .select({ count: count() })
-      .from(enterpriseContacts)
-      .where(gte(enterpriseContacts.createdAt, sevenDaysAgo));
-
-    const [enterpriseLastWeek] = await db
-      .select({ count: count() })
-      .from(enterpriseContacts)
-      .where(
-        sql`${enterpriseContacts.createdAt} >= ${fourteenDaysAgo} AND ${enterpriseContacts.createdAt} < ${sevenDaysAgo}`
-      );
-
-    const [enterpriseThisMonth] = await db
-      .select({ count: count() })
-      .from(enterpriseContacts)
-      .where(gte(enterpriseContacts.createdAt, thirtyDaysAgo));
-
     const enterpriseThisWeekCount = enterpriseThisWeek?.count || 0;
     const enterpriseLastWeekCount = enterpriseLastWeek?.count || 0;
     
@@ -170,6 +132,7 @@ async function getStats() {
     return null;
   }
 }
+
 
 export default async function AdminDashboardPage() {
   const stats = await getStats();

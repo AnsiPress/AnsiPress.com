@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import type { Waitlist } from "@/lib/db/schema";
 
 export interface WaitlistTableProps {
   entries: Array<Waitlist & { emailLogCount: number }>;
-  onUpdate?: (id: number, updates: Partial<Waitlist>) => void;
-  onDelete?: (id: number) => void;
+  onUpdate?: (id: number, updates: Partial<Waitlist>) => Promise<any>;
+  onDelete?: (id: number) => Promise<any>;
 }
 
 export function WaitlistTable({ entries, onUpdate, onDelete }: WaitlistTableProps) {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [isPending, startTransition] = useTransition();
 
   const toggleSelect = (id: number) => {
     const newSelected = new Set(selectedIds);
@@ -166,16 +167,36 @@ export function WaitlistTable({ entries, onUpdate, onDelete }: WaitlistTableProp
                   <div className="flex items-center gap-2">
                     {onUpdate && !entry.emailVerified && (
                       <button
-                        onClick={() => onUpdate(entry.id, { emailVerified: true })}
-                        className="text-xs text-purple-400 hover:text-purple-300"
+                        onClick={() => {
+                          startTransition(async () => {
+                            try {
+                              await onUpdate(entry.id, { emailVerified: true });
+                            } catch (err) {
+                              alert("Failed to verify email");
+                            }
+                          });
+                        }}
+                        disabled={isPending}
+                        className="text-xs text-purple-400 hover:text-purple-300 disabled:opacity-50"
                       >
                         Verify
                       </button>
                     )}
                     {onDelete && (
                       <button
-                        onClick={() => onDelete(entry.id)}
-                        className="text-xs text-red-400 hover:text-red-300"
+                        onClick={() => {
+                          if (confirm("Are you sure you want to delete this entry?")) {
+                            startTransition(async () => {
+                              try {
+                                await onDelete(entry.id);
+                              } catch (err) {
+                                alert("Failed to delete entry");
+                              }
+                            });
+                          }
+                        }}
+                        disabled={isPending}
+                        className="text-xs text-red-400 hover:text-red-300 disabled:opacity-50"
                       >
                         Delete
                       </button>

@@ -1,106 +1,118 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { db } from "@/lib/db";
+import { waitlist, emailLogs } from "@/lib/db/schema";
+import { eq, desc, count, and } from "drizzle-orm";
 import { WaitlistTable } from "@/components/admin/WaitlistTable";
-import type { Waitlist } from "@/lib/db/schema";
+import { WaitlistFilters } from "@/components/admin/WaitlistFilters";
+import { updateWaitlistEntry, deleteWaitlistEntry } from "./actions";
+import Link from "next/link";
+import { Suspense } from "react";
 
-// Type for the API response
-type WaitlistEntry = Waitlist & { emailLogCount: number };
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
 
-export default function AdminWaitlistPage() {
-  const [entries, setEntries] = useState<WaitlistEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [filters, setFilters] = useState({
-    subscribed: "",
-    emailVerified: "",
-  });
+interface PageProps {
+  searchParams: Promise<{
+    page?: string;
+    subscribed?: string;
+    emailVerified?: string;
+  }>;
+}
 
-  // Fetch waitlist entries via server action
-  useEffect(() => {
-    const fetchEntries = async () => {
-      setLoading(true);
-      setError(null);
+async function WaitlistContent({ searchParams }: PageProps) {
+  const { page: pageStr = "1", subscribed, emailVerified } = await searchParams;
+  
+  const page = parseInt(pageStr);
+  const limit = 30;
 
-      try {
-        const params = new URLSearchParams({
-          page: page.toString(),
-          limit: "30",
-        });
+  // Build filter conditions
+  const conditions = [];
+  if (subscribed) {
+    conditions.push(eq(waitlist.subscribed, subscribed === "true"));
+  }
+  if (emailVerified) {
+    conditions.push(eq(waitlist.emailVerified, emailVerified === "true"));
+  }
 
-        if (filters.subscribed) {
-          params.set("subscribed", filters.subscribed);
-        }
-        if (filters.emailVerified) {
-          params.set("emailVerified", filters.emailVerified);
-        }
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
-        // Call via the server-protected route (middleware handles auth)
-        const response = await fetch(`/api/admin/waitlist/client?${params}`);
+  // Parallelize count and entries fetch
+  const [[totalResult], entries] = await Promise.all([
+    db.select({ count: count() }).from(waitlist).where(whereClause),
+    db.select()
+      .from(waitlist)
+      .where(whereClause)
+      .orderBy(desc(waitlist.createdAt))
+      .limit(limit)
+      .offset((page - 1) * limit)
+  ]);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch waitlist");
-        }
+  const total = totalResult?.count || 0;
+  const totalPages = Math.ceil(total / limit);
 
-        const data = await response.json();
-        setEntries(data.entries);
-        setTotalPages(data.pagination.totalPages);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Get email log counts for each entry
+  const entriesWithCounts = await Promise.all(
+    entries.map(async (entry) => {
+      const [logCount] = await db
+        .select({ count: count() })
+        .from(emailLogs)
+        .where(eq(emailLogs.waitlistId, entry.id));
 
-    fetchEntries();
-  }, [page, filters]);
+      return {
+        ...entry,
+        emailLogCount: logCount?.count || 0,
+      };
+    })
+  );
 
-  const handleUpdate = async (id: number, updates: Partial<Waitlist>) => {
-    try {
-      const response = await fetch(`/api/admin/waitlist/client/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updates),
-      });
+  return (
+    <>
+      <WaitlistTable
+        entries={entriesWithCounts}
+        onUpdate={updateWaitlistEntry}
+        onDelete={deleteWaitlistEntry}
+      />
 
-      if (!response.ok) {
-        throw new Error("Failed to update entry");
-      }
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 mt-8">
+          <Link
+            href={{
+              query: { 
+                ... (subscribed ? { subscribed } : {}),
+                ... (emailVerified ? { emailVerified } : {}),
+                page: Math.max(1, page - 1).toString() 
+              },
+            }}
+            className={`px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors ${
+              page === 1 ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            Previous
+          </Link>
+          <span className="text-zinc-400">
+            Page {page} of {totalPages}
+          </span>
+          <Link
+            href={{
+              query: { 
+                ... (subscribed ? { subscribed } : {}),
+                ... (emailVerified ? { emailVerified } : {}),
+                page: Math.min(totalPages, page + 1).toString() 
+              },
+            }}
+            className={`px-4 py-2 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors ${
+              page === totalPages ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            Next
+          </Link>
+        </div>
+      )}
+    </>
+  );
+}
 
-      // Refresh entries
-      setPage(page); // This will trigger useEffect
-    } catch (err) {
-      console.error("Error updating entry:", err);
-      alert("Failed to update entry");
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this entry?")) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/admin/waitlist/client/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to delete entry");
-      }
-
-      // Refresh entries
-      setPage(page); // This will trigger useEffect
-    } catch (err) {
-      console.error("Error deleting entry:", err);
-      alert("Failed to delete entry");
-    }
-  };
-
+export default function AdminWaitlistPage({ searchParams }: PageProps) {
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -111,77 +123,12 @@ export default function AdminWaitlistPage() {
         </p>
       </div>
 
-      {/* Filters */}
-      <div className="flex items-center gap-4">
-        <div>
-          <label className="block text-sm text-zinc-400 mb-2">Subscription Status</label>
-          <select
-            value={filters.subscribed}
-            onChange={(e) => {
-              setFilters({ ...filters, subscribed: e.target.value });
-              setPage(1);
-            }}
-            className="h-10 px-3 rounded-lg bg-white/10 border border-white/20 text-white"
-          >
-            <option value="">All</option>
-            <option value="true">Subscribed</option>
-            <option value="false">Unsubscribed</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm text-zinc-400 mb-2">Verification Status</label>
-          <select
-            value={filters.emailVerified}
-            onChange={(e) => {
-              setFilters({ ...filters, emailVerified: e.target.value });
-              setPage(1);
-            }}
-            className="h-10 px-3 rounded-lg bg-white/10 border border-white/20 text-white"
-          >
-            <option value="">All</option>
-            <option value="true">Verified</option>
-            <option value="false">Unverified</option>
-          </select>
-        </div>
-      </div>
+      <WaitlistFilters />
 
-      {/* Table */}
-      {loading ? (
-        <div className="text-center py-12 text-zinc-400">Loading...</div>
-      ) : error ? (
-        <div className="text-center py-12 text-red-400">{error}</div>
-      ) : (
-        <>
-          <WaitlistTable
-            entries={entries}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-          />
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
-              <button
-                onClick={() => setPage(Math.max(1, page - 1))}
-                disabled={page === 1}
-                className="px-4 py-2 rounded-lg bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
-              >
-                Previous
-              </button>
-              <span className="text-zinc-400">
-                Page {page} of {totalPages}
-              </span>
-              <button
-                onClick={() => setPage(Math.min(totalPages, page + 1))}
-                disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg bg-white/10 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/20 transition-colors"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </>
-      )}
+      <Suspense fallback={<div className="text-center py-12 text-zinc-400">Loading entries...</div>}>
+        <WaitlistContent searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }
+

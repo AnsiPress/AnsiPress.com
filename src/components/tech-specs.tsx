@@ -1,5 +1,6 @@
 "use client";
 
+import { GradientText } from "@/components/ui/gradient-text";
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,7 +42,7 @@ export function TechSpecsSection() {
             transition={{ duration: 0.5 }}
             className="text-4xl sm:text-5xl font-heading font-bold mb-4"
           >
-            Built on <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Modern Technology</span>
+            Built on <GradientText>Modern Technology</GradientText>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

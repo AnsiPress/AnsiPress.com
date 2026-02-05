@@ -1,3 +1,4 @@
+import { GradientText } from "@/components/ui/gradient-text";
 import { Check, Sparkles } from "lucide-react";
 import Link from "next/link";
 
@@ -71,11 +72,10 @@ export function Pricing() {
       <div className="container relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-white">
+            No Hidden Fees <br />
+            <GradientText>
               Pay for What You Use.
-            </span>{" "}
-            <br />
-            No Hidden Fees.
+            </GradientText>
           </h2>
           <p className="text-zinc-400 text-lg">
             Every plan includes monitoring, security scanning, and automated backups.

@@ -1,4 +1,5 @@
 import { Shield, Zap, Code2, Eye, Lock, Rocket } from "lucide-react";
+import { GradientText } from "@/components/ui/gradient-text";
 
 const features = [
   {
@@ -45,7 +46,8 @@ export function Features() {
       <div className="container">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <h2 className="text-3xl font-bold tracking-tight mb-4">
-            Security Isn't an Add-On. <br />It's the Foundation.
+            Security Isn't an Add-On. <br />
+            <GradientText>It's the Foundation.</GradientText>
           </h2>
           <p className="text-zinc-400">
             We optimize for what actually matters in production: uptime, security, and peace of mind.

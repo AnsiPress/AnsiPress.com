@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import Turnstile from "@/components/Turnstile";
+import { GradientText } from "@/components/ui/gradient-text";
 
 export function MigrationSection() {
   const [formData, setFormData] = useState({
@@ -65,7 +66,8 @@ export function MigrationSection() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">
-              Moving Hosts is a Pain. <br />We&apos;ll Do It For You.
+              Moving Hosts is a Pain. <br />
+              <GradientText>We&apos;ll Do It For You.</GradientText>
             </h2>
             <p className="text-zinc-400">
               Tell us about your current setup. We&apos;ll send you a custom migration plan—free, no obligations.

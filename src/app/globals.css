@@ -5,6 +5,7 @@
   --color-brand-secondary: #ec4899;
   --animate-fade-in: fade-in 0.5s ease-in-out;
   --animate-slide-up: slide-up 0.5s ease-out;
+  --animate-gradient: gradient-animation 5s ease infinite;
 }
 
 @keyframes fade-in {
@@ -15,6 +16,12 @@
 @keyframes slide-up {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 :root {

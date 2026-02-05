@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import { clearAdminCookie, isAdminAuthenticated } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const isAuthenticated = await isAdminAuthenticated();
@@ -19,8 +20,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-8">
-              <Link href="/admin" className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-                AnsiPress Admin
+              <Link href="/admin">
+                <BrandLogo size="md">AnsiPress Admin</BrandLogo>
               </Link>
               {isAuthenticated && (
                 <nav className="flex gap-6">

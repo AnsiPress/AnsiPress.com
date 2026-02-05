@@ -2,6 +2,7 @@
 
 import { useState, FormEvent, useEffect } from "react";
 import Turnstile from "@/components/Turnstile";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 type Tab = "waitlist" | "signin" | "quickstart";
 
@@ -64,9 +65,7 @@ export default function StartPage() {
     <main className="min-h-screen bg-black text-white">
       <div className="container py-24">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2 inline-block">
-            AnsiPress
-          </h1>
+          <BrandLogo size="lg" as="h1" className="mb-2" />
           <p className="text-zinc-400">Choose your path to get started</p>
         </div>
 

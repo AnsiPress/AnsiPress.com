@@ -1,5 +1,6 @@
 "use client";
 
+import { GradientText } from "@/components/ui/gradient-text";
 import { useState, useEffect, FormEvent } from "react";
 import { MoveRight } from "lucide-react";
 import Turnstile from "@/components/Turnstile";
@@ -111,9 +112,9 @@ export function Hero() {
 
         <h1 className="max-w-4xl text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
           Everything You Need for<br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
+          <GradientText>
             Modern Hosting
-          </span>
+          </GradientText>
         </h1>
 
         <p className="max-w-2xl text-lg md:text-xl text-zinc-400 mb-4 leading-relaxed">

@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { MoveRight } from "lucide-react";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/50 backdrop-blur-xl">
       <div className="container flex h-16 items-center justify-between">
-        <Link href="/" className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400">
-          AnsiPress
+        <Link href="/">
+          <BrandLogo size="md" />
         </Link>
 
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">

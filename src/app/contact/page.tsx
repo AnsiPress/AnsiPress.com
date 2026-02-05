@@ -2,6 +2,7 @@
 
 import { useState, FormEvent } from "react";
 import Turnstile from "@/components/Turnstile";
+import { GradientText } from "@/components/ui/gradient-text";
 
 export default function ContactPage() {
   const [form, setForm] = useState({
@@ -110,8 +111,8 @@ export default function ContactPage() {
     <main className="min-h-screen bg-black text-white">
       <div className="container py-24 max-w-2xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 mb-2 inline-block">
-            AnsiPress
+          <h1 className="text-4xl font-bold tracking-tight mb-2 inline-block">
+            <GradientText>AnsiPress</GradientText>
           </h1>
           <p className="text-zinc-400">Enterprise Contact</p>
         </div>

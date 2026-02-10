@@ -154,9 +154,11 @@ export default function StartPage() {
 
           {tab === "quickstart" && (
             <div>
-              <h2 className="text-xl font-semibold mb-3">We’re getting things ready</h2>
+              <h2 className="text-xl font-semibold mb-3">We're getting things ready</h2>
+              <p className="text-zinc-400 mb-4">
                 This section is being built and will be live soon as part of AnsiPress.
-              <p className="text-zinc-500 text-sm mt-4">
+              </p>
+              <p className="text-zinc-500 text-sm">
                 Detailed docs are coming soon: <a href="/docs" className="text-purple-400 hover:text-purple-300">Documentation</a>
               </p>
             </div>

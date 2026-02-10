@@ -145,10 +145,9 @@ export default function StartPage() {
           {tab === "signin" && (
             <div>
               <h2 className="text-xl font-semibold mb-3">Sign In</h2>
-              <p className="text-zinc-400 mb-4">User accounts are coming soon. For now, use the admin login if you have access.</p>
+              <p className="text-zinc-400 mb-4">User accounts are coming soon.</p>
               <div className="flex items-center gap-3">
-                <a href="/login" className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20">User Login</a>
-                <a href="/admin/login" className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white">Admin Login</a>
+                <a href="/login" className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white">User Login</a>
               </div>
             </div>
           )}

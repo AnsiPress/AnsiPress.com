@@ -1,13 +1,10 @@
-import { Inter, Space_Grotesk } from "next/font/google";
-
-export const inter = Inter({
-  subsets: ["latin"],
+// Using local font declarations as fallback for environments where Google Fonts cannot be fetched
+export const inter = {
   variable: "--font-inter",
-  display: "swap",
-});
+  className: "font-sans",
+};
 
-export const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
+export const spaceGrotesk = {
   variable: "--font-space-grotesk",
-  display: "swap",
-});
+  className: "font-sans",
+};

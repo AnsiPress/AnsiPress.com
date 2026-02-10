@@ -6,11 +6,17 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // dash.ansipress.com/* → /(dash)/* routes
+        // dash.ansipress.com/ → /dash/ route
         {
-          source: '/:path*',
+          source: '/',
           has: [{ type: 'host', value: 'dash.ansipress.com' }],
-          destination: '/(dash)/:path*',
+          destination: '/dash',
+        },
+        // dash.ansipress.com/:path → /dash/:path route
+        {
+          source: '/:path(.*)',
+          has: [{ type: 'host', value: 'dash.ansipress.com' }],
+          destination: '/dash/:path',
         },
       ],
     };

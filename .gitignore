@@ -45,3 +45,4 @@ next-env.d.ts
 
 # Local AI Agent Config
 .agent
+.env.local

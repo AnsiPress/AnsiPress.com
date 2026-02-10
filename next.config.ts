@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/",
-        has: [{ type: "host", value: "dash.local" }],
+        has: [{ type: "host", value: "dash.ansipress.local" }],
         destination: "/login",
         permanent: false,
       },

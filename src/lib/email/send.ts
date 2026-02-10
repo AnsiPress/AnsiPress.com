@@ -30,7 +30,7 @@ const getAdminEmail = () => {
  * Log email to database
  */
 async function logEmail(
-  waitlistId: number,
+  waitlistId: string,
   emailType: string,
   resendId?: string,
   error?: string
@@ -54,7 +54,7 @@ async function logEmail(
 export async function sendWelcomeEmail(
   to: string,
   verificationToken: string,
-  waitlistId: number
+  waitlistId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const emailHtml = await render(
@@ -122,7 +122,7 @@ export async function sendAdminNotification(data: {
 export async function sendWeeklyUpdate(
   to: string,
   updates: string[],
-  waitlistId: number
+  waitlistId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const emailHtml = await render(

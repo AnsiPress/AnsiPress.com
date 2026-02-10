@@ -1,17 +1,21 @@
 import {
   pgTable,
-  serial,
+  uuid,
   text,
   timestamp,
   boolean,
   integer,
+  pgSchema,
 } from "drizzle-orm/pg-core";
+
+// Define the 'www' schema
+export const wwwSchema = pgSchema("www");
 
 /**
  * Waitlist table - stores user signups for AnsiPress hosting
  */
-export const waitlist = pgTable("waitlist", {
-  id: serial("id").primaryKey(),
+export const waitlist = wwwSchema.table("waitlist", {
+  id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull().unique(),
   website: text("website"),
   currentHost: text("current_host"),
@@ -27,20 +31,20 @@ export const waitlist = pgTable("waitlist", {
   verificationToken: text("verification_token"),
   tags: text("tags").array().default([]),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 /**
  * Email logs table - tracks all emails sent to waitlist users
  */
-export const emailLogs = pgTable("email_logs", {
-  id: serial("id").primaryKey(),
-  waitlistId: integer("waitlist_id")
+export const emailLogs = wwwSchema.table("email_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  waitlistId: uuid("waitlist_id")
     .notNull()
     .references(() => waitlist.id, { onDelete: "cascade" }),
   emailType: text("email_type").notNull(), // 'welcome', 'weekly_update', 'launch_notification'
-  sentAt: timestamp("sent_at").defaultNow().notNull(),
+  sentAt: timestamp("sent_at", { withTimezone: true }).defaultNow().notNull(),
   status: text("status").default("sent").notNull(), // 'sent', 'delivered', 'opened', 'clicked', 'bounced'
   resendId: text("resend_id"),
   error: text("error"),
@@ -55,8 +59,8 @@ export type NewEmailLog = typeof emailLogs.$inferInsert;
 /**
  * Enterprise contacts table - stores contact requests from enterprise customers
  */
-export const enterpriseContacts = pgTable("enterprise_contacts", {
-  id: serial("id").primaryKey(),
+export const enterpriseContacts = wwwSchema.table("enterprise_contacts", {
+  id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   email: text("email").notNull(),
   company: text("company"),
@@ -67,7 +71,7 @@ export const enterpriseContacts = pgTable("enterprise_contacts", {
   utmMedium: text("utm_medium"),
   utmCampaign: text("utm_campaign"),
   referralSource: text("referral_source"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type EnterpriseContact = typeof enterpriseContacts.$inferSelect;

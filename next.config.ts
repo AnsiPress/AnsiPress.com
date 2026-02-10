@@ -2,7 +2,32 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "ansipress.local:3000",
+        "dash.ansipress.local:3000",
+        "ansipress.com",
+        "dash.ansipress.com",
+      ],
+    },
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        has: [{ type: "host", value: "dash.ansipress.com" }],
+        destination: "/login",
+        permanent: false,
+      },
+      {
+        source: "/",
+        has: [{ type: "host", value: "dash.local" }],
+        destination: "/login",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {

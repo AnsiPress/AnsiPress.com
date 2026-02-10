@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s - AnsiPress",
+    default: "Dashboard - AnsiPress",
+  },
+  description: "AnsiPress Dashboard — Manage your servers, sites, and backups",
+};
+
 export default function DashLayout({
   children,
 }: Readonly<{
@@ -9,3 +19,4 @@ export default function DashLayout({
     </div>
   );
 }
+

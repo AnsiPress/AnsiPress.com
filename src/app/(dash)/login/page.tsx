@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Login - AnsiPress",
-  description: "Login to AnsiPress - Coming Soon",
+  description: "Login to your AnsiPress dashboard",
 };
 
 export default function LoginPage() {

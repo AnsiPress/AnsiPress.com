@@ -62,12 +62,11 @@ export default function StartPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="container py-24">
-        <div className="text-center mb-8">
-          <BrandLogo size="lg" as="h1" className="mb-2" />
-          <p className="text-zinc-400">Choose your path to get started</p>
-        </div>
+    <div className="container py-12 w-full">
+      <div className="text-center mb-8">
+        <BrandLogo size="lg" as="h1" className="mb-2" />
+        <p className="text-zinc-400">Choose your path to get started</p>
+      </div>
 
         {/* Tabs */}
         <div className="flex justify-center mb-8">
@@ -145,10 +144,9 @@ export default function StartPage() {
           {tab === "signin" && (
             <div>
               <h2 className="text-xl font-semibold mb-3">Sign In</h2>
-              <p className="text-zinc-400 mb-4">User accounts are coming soon. For now, use the admin login if you have access.</p>
+              <p className="text-zinc-400 mb-4">User accounts are coming soon.</p>
               <div className="flex items-center gap-3">
                 <a href="/login" className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20">User Login</a>
-                <a href="/admin/login" className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white">Admin Login</a>
               </div>
             </div>
           )}
@@ -164,6 +162,6 @@ export default function StartPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

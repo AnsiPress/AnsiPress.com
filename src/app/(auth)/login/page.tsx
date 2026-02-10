@@ -8,9 +8,11 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <ComingSoon 
-      title="Login" 
-      description="User accounts and dashboard access are currently in development."
-    />
+    <div className="w-full max-w-md">
+      <ComingSoon 
+        title="Login" 
+        description="User accounts and dashboard access are currently in development."
+      />
+    </div>
   );
 }

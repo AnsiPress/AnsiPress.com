@@ -3,6 +3,18 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // dash.ansipress.com/* → /(dash)/* routes
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'dash.ansipress.com' }],
+          destination: '/(dash)/:path*',
+        },
+      ],
+    };
+  },
 };
 
 export default withSentryConfig(nextConfig, {

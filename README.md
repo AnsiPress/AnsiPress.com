@@ -2,7 +2,7 @@
 
 Ansible-powered hosting automation with ZFS snapshots, backups, and one-command deployments.
 
-👉 Get started: [AnsiPress.com](https://ansipress.com/start?utm_source=github&utm_medium=referral&utm_campaign=oss&utm_content=readme)
+👉 Get started: [AnsiPress.com](https://ansipress.com/?utm_source=github&utm_medium=referral&utm_campaign=oss&utm_content=readme)
 
 ## Getting Started
 
@@ -76,37 +76,31 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Accessing the Admin Dashboard
-
-1. Navigate to [http://localhost:3000/admin](http://localhost:3000/admin)
-2. Enter your admin password (the one you set in `.env.local`)
-3. Manage waitlist entries, view analytics, and more!
-
 ## Project Structure
 
 ```
-src/
-├── app/
-│   ├── api/              # API routes
-│   │   ├── waitlist/     # Waitlist endpoints
-│   │   ├── admin/        # Admin endpoints
-│   │   ├── verify/       # Email verification
-│   │   ├── unsubscribe/  # Unsubscribe endpoint
-│   │   └── contact/      # Enterprise contact endpoint
-│   ├── admin/            # Admin dashboard pages
-│   │   └── contacts/     # Enterprise contacts admin view
-│   ├── verify/           # Email verification page
-│   ├── unsubscribe/      # Unsubscribe page
-│   ├── contact/          # Enterprise contact page
-│   └── start/            # Unified get started (waitlist/signin/quickstart)
-├── components/           # React components
-│   ├── admin/            # Admin dashboard components
-│   └── ui/               # UI components (BrandLogo, etc.)
-└── lib/
-    ├── db/               # Database schema and client
-    ├── email/            # Email templates and service
-    ├── auth.ts           # Authentication utilities
-    └── rate-limit.ts     # Rate limiting
+.
+├── drizzle.config.ts     # Drizzle configuration
+├── next.config.ts        # Next.js configuration
+├── sentry.edge.config.ts # Sentry Edge config
+├── sentry.server.config.ts # Sentry Server config
+├── tailwind.config.ts    # Tailwind CSS configuration
+└── src/
+    ├── app/
+    │   ├── (auth)/           # Authentication routes
+    │   ├── (dash)/           # Dashboard routes (Phase 2)
+    │   ├── (www)/            # Marketing site routes
+    │   └── api/              # API routes
+    ├── components/           # React components
+    │   ├── admin/            # Admin dashboard components
+    │   └── ui/               # UI components (BrandLogo, etc.)
+    ├── lib/
+    │   ├── db/               # Database schema and client
+    │   ├── email/            # Email templates and service
+    │   ├── auth.ts           # Authentication utilities
+    │   └── rate-limit.ts     # Rate limiting
+    ├── instrumentation.ts    # OpenTelemetry/Sentry instrumentation
+    └── instrumentation-client.ts
 ```
 
 ## Features
@@ -122,12 +116,7 @@ src/
 - Admin notifications for new signups
 - Weekly update emails (automated)
 
-### Admin Dashboard
-- Real-time statistics and analytics
-- Waitlist management (view, edit, delete)
-- Email delivery tracking
-- Traffic source analysis
-- CSV export
+
 
 ### Security
 - Password-protected admin access
@@ -176,9 +165,9 @@ npm run db:push
 
 ### Admin Pages
 
-- `/admin` - Dashboard
-- `/admin/waitlist` - Waitlist management
-- `/admin/contacts` - Enterprise contact submissions
+- `/admin` - Dashboard (Coming Soon)
+- `/admin/waitlist` - Waitlist management (Internal)
+
 
 ## Deployment
 

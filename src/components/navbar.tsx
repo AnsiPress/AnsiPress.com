@@ -22,23 +22,14 @@ export function Navbar() {
           <Link href="#specs" className="hover:text-white transition-colors">
             Tech Specs
           </Link>
-          <Link href="/docs" className="hover:text-white transition-colors">
-            Documentation
-          </Link>
         </nav>
 
         <div className="flex items-center gap-4">
           <Link
             href="/login"
-            className="hidden sm:inline-flex text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/start"
             className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black hover:bg-zinc-200 transition-colors"
           >
-            Get Started
+            Login
             <MoveRight className="w-4 h-4" />
           </Link>
         </div>

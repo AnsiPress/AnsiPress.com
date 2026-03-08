@@ -12,22 +12,6 @@ const nextConfig: NextConfig = {
       ],
     },
   },
-  async redirects() {
-    return [
-      {
-        source: "/",
-        has: [{ type: "host", value: "dash.ansipress.com" }],
-        destination: "/login",
-        permanent: false,
-      },
-      {
-        source: "/",
-        has: [{ type: "host", value: "dash.ansipress.local" }],
-        destination: "/login",
-        permanent: false,
-      },
-    ];
-  },
 };
 
 export default withSentryConfig(nextConfig, {

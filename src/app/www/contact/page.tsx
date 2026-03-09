@@ -110,14 +110,13 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="container py-24 max-w-2xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2 inline-block">
-            <GradientText>AnsiPress</GradientText>
-          </h1>
-          <p className="text-zinc-400">Enterprise Contact</p>
-        </div>
-
         <div className="rounded-lg border border-white/10 bg-white/5 p-6">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-bold tracking-tight mb-2 inline-block">
+              <GradientText>AnsiPress</GradientText>
+            </h1>
+            <p className="text-zinc-400">Enterprise Contact</p>
+          </div>
           {success ? (
             <div className="text-center py-4">
               <h2 className="text-2xl font-bold text-green-400 mb-2">Thank you!</h2>

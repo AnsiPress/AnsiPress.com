@@ -53,15 +53,14 @@ function VerifyContent() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
-        {/* Logo/Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2 inline-block">
-            <GradientText>AnsiPress</GradientText>
-          </h1>
-        </div>
-
         {/* Status Card */}
         <div className="rounded-lg border border-white/10 bg-white/5 p-8">
+          {/* Logo/Header */}
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold tracking-tight mb-2 inline-block">
+              <GradientText>AnsiPress</GradientText>
+            </h1>
+          </div>
           {status === "loading" && (
             <>
               <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
@@ -153,12 +152,12 @@ function VerifyLoading() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight mb-2 inline-block">
-            <GradientText>AnsiPress</GradientText>
-          </h1>
-        </div>
         <div className="rounded-lg border border-white/10 bg-white/5 p-8">
+          <div className="mb-6">
+            <h1 className="text-4xl font-bold tracking-tight mb-2 inline-block">
+              <GradientText>AnsiPress</GradientText>
+            </h1>
+          </div>
           <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-zinc-400">Verifying your email...</p>
         </div>

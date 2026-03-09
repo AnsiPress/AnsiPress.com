@@ -3,7 +3,6 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { BrandLogo } from "@/components/ui/brand-logo";
 import { GradientText } from "@/components/ui/gradient-text";
 import Turnstile from "@/components/Turnstile";
 

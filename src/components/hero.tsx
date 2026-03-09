@@ -4,7 +4,6 @@ import { GradientText } from "@/components/ui/gradient-text";
 import { useState, useEffect, FormEvent } from "react";
 import { MoveRight } from "lucide-react";
 import Turnstile from "@/components/Turnstile";
-import StatusBadge from "@/components/StatusBadge"
 
 const terminalCommands = [
   "ansible-playbook -i inventory main.yml",
@@ -105,10 +104,7 @@ export function Hero() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/10 blur-[100px] rounded-full mix-blend-screen pointer-events-none mt-20" />
 
       <div className="container relative z-10 flex flex-col items-center text-center">
-        {/* Status Badge */}
-        <div className="mb-8">
-          <StatusBadge />
-        </div>
+
 
         <h1 className="max-w-4xl text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
           Everything You Need for<br />

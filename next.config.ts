@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: [
+    "ansipress.local",
     "ansipress.local:3000",
+    "dash.ansipress.local",
     "dash.ansipress.local:3000",
   ],
   experimental: {

@@ -50,8 +50,6 @@
     "typescript": "^5"
   },
   "overrides": {
-    "@esbuild-kit/core-utils": {
       "esbuild": "^0.25.0"
     }
-  }
 }

@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 // Public paths within the dash subdomain that don't require auth
 const PUBLIC_PATHS = ["/login", "/signup", "/forgot-password", "/reset-password", "/verify"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
   const pathname = url.pathname;

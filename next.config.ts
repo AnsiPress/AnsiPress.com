@@ -2,6 +2,10 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    "ansipress.local:3000",
+    "dash.ansipress.local:3000",
+  ],
   experimental: {
     serverActions: {
       allowedOrigins: [

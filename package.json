@@ -13,6 +13,7 @@
     "db:seed": "tsx src/lib/db/seed.ts"
   },
   "dependencies": {
+    "@icons-pack/react-simple-icons": "^13.13.0",
     "@marsidev/react-turnstile": "^1.4.2",
     "@neondatabase/serverless": "^1.0.2",
     "@radix-ui/react-slot": "^1.2.4",

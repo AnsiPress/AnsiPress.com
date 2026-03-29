@@ -175,11 +175,11 @@ export default function SignupPage() {
               />
               <label htmlFor="acceptedTerms" className="text-sm text-zinc-300 cursor-pointer">
                 I agree to the{" "}
-                <Link href="/terms" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">
+                <Link href="https://ansipress.com/terms" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">
                   Terms of Service
                 </Link>
                 {" "}and{" "}
-                <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">
+                <Link href="https://ansipress.com/privacy" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">
                   Privacy Policy
                 </Link>
               </label>

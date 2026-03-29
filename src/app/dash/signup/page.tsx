@@ -16,6 +16,7 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -24,9 +25,14 @@ export default function SignupPage() {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!acceptedTerms) {
+      setError("You must accept the Terms of Service and Privacy Policy");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
-
     if (!strength.checks.length) {
       setError("Password must be at least 8 characters");
       setIsLoading(false);
@@ -159,11 +165,30 @@ export default function SignupPage() {
               />
               <PasswordStrengthMeter password={password} />
             </div>
+            <div className="flex items-center gap-3 py-2">
+              <input
+                type="checkbox"
+                id="acceptedTerms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="w-5 h-5 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-offset-0 cursor-pointer"
+              />
+              <label htmlFor="acceptedTerms" className="text-sm text-zinc-300 cursor-pointer">
+                I agree to the{" "}
+                <Link href="https://ansipress.com/terms" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">
+                  Terms of Service
+                </Link>
+                {" "}and{" "}
+                <Link href="https://ansipress.com/privacy" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">
+                  Privacy Policy
+                </Link>
+              </label>
+            </div>
             {error && <p className="text-red-400 text-sm">{error}</p>}
             <Button
               type="submit"
               className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-              disabled={isLoading || strength.score < 5}
+              disabled={isLoading || strength.score < 5 || !acceptedTerms}
             >
               {isLoading ? "Creating account..." : "Create account"}
             </Button>

@@ -13,20 +13,28 @@ function LinkedInIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+import { HighlightedText } from "@/components/ui/highlighted-text";
 import { recommendations } from "./recommendations";
-
 export function TestimonialsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const totalItems = recommendations.length;
 
   // Check scroll position for button states
-  const updateScrollButtons = () => {
+  const updateScrollState = () => {
     if (!scrollRef.current) return;
     const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
     setCanScrollLeft(scrollLeft > 5);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
+
+    const isDesktop = window.innerWidth >= 768;
+    const cardWidth = isDesktop ? (clientWidth - 24) / 2 : 380; // 24 is the gap
+    const index = Math.round(scrollLeft / cardWidth);
+    setCurrentIndex(index);
   };
 
   // Auto-scroll
@@ -42,7 +50,9 @@ export function TestimonialsCarousel() {
         // Reset to beginning smoothly
         container.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        container.scrollBy({ left: 380, behavior: "smooth" });
+        // Scroll by 2 cards on desktop
+        const scrollAmount = window.innerWidth >= 768 ? clientWidth : 380;
+        container.scrollBy({ left: scrollAmount, behavior: "smooth" });
       }
     }, 5000);
 
@@ -54,15 +64,16 @@ export function TestimonialsCarousel() {
     const container = scrollRef.current;
     if (!container) return;
 
-    container.addEventListener("scroll", updateScrollButtons);
-    updateScrollButtons();
+    container.addEventListener("scroll", updateScrollState);
+    updateScrollState();
 
-    return () => container.removeEventListener("scroll", updateScrollButtons);
+    return () => container.removeEventListener("scroll", updateScrollState);
   }, []);
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
-    const amount = direction === "left" ? -380 : 380;
+    const scrollAmount = window.innerWidth >= 768 ? scrollRef.current.clientWidth : 380;
+    const amount = direction === "left" ? -scrollAmount : scrollAmount;
     scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
   };
 
@@ -129,13 +140,13 @@ export function TestimonialsCarousel() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.3) }}
-                className="shrink-0 w-[340px] snap-start"
+                className="shrink-0 w-[340px] md:w-[calc(50%-12px)] snap-start"
               >
                 <div className="h-full p-6 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors flex flex-col">
-                  <Quote className="w-8 h-8 text-purple-500/40 mb-4 shrink-0" />
-                  <p className="text-zinc-300 text-sm leading-relaxed flex-1 mb-5">
-                    &ldquo;{rec.text}&rdquo;
-                  </p>
+                  <div className="text-zinc-300 text-sm leading-relaxed flex-1 mb-5 overflow-y-auto max-h-[320px] pr-2 custom-scrollbar">
+                    <Quote className="w-8 h-8 text-purple-500/40 mb-2 shrink-0 inline mr-1 -mt-2" />
+                    <HighlightedText text={rec.text} />
+                  </div>
                   <div className="flex items-center justify-between pt-4 border-t border-white/10">
                     <div>
                       <p className="text-white font-medium text-sm">{rec.name}</p>
@@ -157,9 +168,37 @@ export function TestimonialsCarousel() {
           </div>
         </div>
 
-        {/* Scroll hint */}
+        {/* Progress Indicator */}
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="flex gap-1.5 max-w-full px-4 overflow-x-auto scrollbar-hide py-2">
+            {recommendations.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  if (!scrollRef.current) return;
+                  const isDesktop = window.innerWidth >= 768;
+                  const cardWidth = (scrollRef.current.clientWidth - 24) / 2;
+                  const scrollAmount = isDesktop ? cardWidth : 380;
+                  scrollRef.current.scrollTo({ left: i * scrollAmount, behavior: "smooth" });
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${
+                  currentIndex === i ? "w-6 bg-purple-500" : "w-1.5 bg-white/10"
+                }`}
+                aria-label={`Go to recommendation ${i + 1}`}
+              />
+            ))}
+          </div>
+          <div className="text-zinc-500 text-xs font-mono tracking-widest uppercase flex items-center gap-3">
+            <span className="text-purple-400">
+              {(currentIndex + 1).toString().padStart(2, "0")}
+            </span>
+            <span className="w-8 h-px bg-white/10" />
+            <span>{totalItems.toString().padStart(2, "0")}</span>
+          </div>
+        </div>
+
         <p className="text-center text-zinc-600 text-xs mt-6">
-          {recommendations.length} recommendations from LinkedIn · Scroll or hover to pause
+          {recommendations.length} recommendations from LinkedIn
         </p>
       </div>
     </section>

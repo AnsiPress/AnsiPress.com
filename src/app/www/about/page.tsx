@@ -586,9 +586,6 @@ export default function AboutPage() {
               <ChevronRight className="w-5 h-5" />
             </button>
 
-            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
-
             <div
               ref={recScrollRef}
               className="flex gap-6 overflow-x-auto px-4 snap-x snap-mandatory"
@@ -601,10 +598,10 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: Math.min(i * 0.03, 0.2) }}
-                  className="shrink-0 w-[360px] md:w-[calc(50%-12px)] snap-start"
+                  className="shrink-0 w-[calc(100vw-48px)] md:w-[calc(50%-12px)] snap-start"
                 >
-                  <div className="h-full p-6 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors flex flex-col">
-                    <div className="text-zinc-300 text-sm leading-relaxed flex-1 mb-5 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar">
+                  <div className="h-full p-6 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors flex flex-col">
+                    <div className="text-zinc-300 text-base leading-relaxed flex-1 mb-5 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar">
                       <Quote className="w-7 h-7 text-purple-500/40 mb-2 shrink-0 inline mr-1 -mt-2" />
                       <HighlightedText text={rec.text} />
                     </div>

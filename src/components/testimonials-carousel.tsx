@@ -3,7 +3,7 @@
 import { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { GradientText } from "@/components/ui/gradient-text";
-import { Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { Quote, ChevronLeft, ChevronRight, Link2, Check } from "lucide-react";
 
 function LinkedInIcon({ size = 16 }: { size?: number }) {
   return (
@@ -49,8 +49,109 @@ function RecommendationAvatar({ rec }: { rec: Recommendation }) {
   );
 }
 
+function CopyLinkButton({ anchor }: { anchor: string }) {
+  const [copied, setCopied] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const url = new URL(window.location.href);
+    url.hash = anchor;
+    
+    // Update URL hash without jumping
+    window.history.replaceState(null, '', `#${anchor}`);
+
+    const fullUrl = url.toString();
+
+    const performCopy = async () => {
+      // 1. Try modern Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(fullUrl);
+          return true;
+        } catch (err) {
+          console.error('Clipboard API failed', err);
+        }
+      }
+
+      // 2. Legacy Fallback (Works on unsecure HTTP/IP connections)
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = fullUrl;
+        
+        // Ensure textarea is not visible but part of DOM
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "0";
+        document.body.appendChild(textArea);
+        
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return successful;
+      } catch (err) {
+        console.error('Fallback copy failed', err);
+        return false;
+      }
+    };
+
+    performCopy().then((success) => {
+      if (success) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    });
+  };
+
+  return (
+    <div className="relative">
+      {/* Tooltip */}
+      <motion.div
+        initial={{ opacity: 0, y: 10, x: "-50%" }}
+        animate={{ 
+          opacity: (isHovered || copied) ? 1 : 0, 
+          y: (isHovered || copied) ? -40 : -30,
+          x: "-50%"
+        }}
+        className={`absolute left-1/2 -translate-x-1/2 px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest whitespace-nowrap pointer-events-none z-50 ${
+          copied ? "bg-green-500 text-white" : "bg-zinc-800 text-zinc-300 border border-white/10"
+        }`}
+      >
+        {copied ? "Link Copied!" : "Copy Recommendation Link"}
+        <div className={`absolute bottom-[-4px] left-1/2 -translate-x-1/2 border-l-4 border-r-4 border-t-4 border-transparent ${
+          copied ? "border-t-green-500" : "border-t-zinc-800"
+        }`} />
+      </motion.div>
+
+      <button
+        onClick={handleCopy}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`p-2 rounded-lg transition-all duration-200 ${
+          copied ? "text-green-400 bg-green-500/10" : "text-zinc-500 hover:text-purple-400 hover:bg-white/5"
+        }`}
+        aria-label="Copy direct link"
+      >
+        {copied ? <Check size={16} /> : <Link2 size={16} />}
+      </button>
+    </div>
+  );
+}
+
+
 import { HighlightedText } from "@/components/ui/highlighted-text";
 import { recommendations } from "./recommendations";
+
+const getAnchor = (name: string) => 
+  name.toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
+
 export function TestimonialsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -105,6 +206,25 @@ export function TestimonialsCarousel() {
 
     return () => container.removeEventListener("scroll", updateScrollState);
   }, []);
+
+  // Handle initial hash scroll
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && scrollRef.current) {
+      // Find the card with this ID
+      const element = document.getElementById(hash);
+      if (element) {
+        // Stop auto-scroll if user came for a specific item
+        setIsPaused(true);
+        
+        // Small delay to ensure layout and animations are ready
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }, 500);
+      }
+    }
+  }, []);
+
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -165,16 +285,20 @@ export function TestimonialsCarousel() {
             className="flex gap-6 overflow-x-auto scrollbar-hide px-4 snap-x snap-mandatory"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {recommendations.map((rec, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.3) }}
-                className="shrink-0 w-[calc(100vw-32px)] md:w-[calc(50%-12px)] snap-start"
-              >
-                <div className="h-full p-6 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors flex flex-col">
+            {recommendations.map((rec, i) => {
+              const anchor = getAnchor(rec.name);
+              return (
+                <motion.div
+                  key={i}
+                  id={anchor}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.3) }}
+                  className="shrink-0 w-[calc(100vw-32px)] md:w-[calc(50%-12px)] snap-start"
+                >
+                  <div className="h-full p-6 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors flex flex-col group/card">
+
                   <div className="text-zinc-300 text-base leading-relaxed flex-1 mb-5 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar">
                     <Quote className="w-8 h-8 text-purple-500/40 mb-2 shrink-0 inline mr-1 -mt-2" />
                     <HighlightedText text={rec.text} />
@@ -192,19 +316,23 @@ export function TestimonialsCarousel() {
                         <p className="text-zinc-500 text-xs">{rec.role}</p>
                       </div>
                     </div>
-                    <a
-                      href={rec.linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-purple-400 hover:text-purple-300 transition-colors"
-                      aria-label={`${rec.name} on LinkedIn`}
-                    >
-                      <LinkedInIcon size={16} />
-                    </a>
+                    <div className="flex items-center gap-2">
+                      <CopyLinkButton anchor={anchor} />
+                      <a
+                        href={rec.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-zinc-500 hover:text-purple-400 transition-colors p-2 rounded-lg hover:bg-white/5"
+                        aria-label={`${rec.name} on LinkedIn`}
+                      >
+                        <LinkedInIcon size={16} />
+                      </a>
+                    </div>
                   </div>
                 </div>
               </motion.div>
-            ))}
+            )})}
+
           </div>
         </div>
 

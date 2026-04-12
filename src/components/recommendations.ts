@@ -81,7 +81,7 @@ export const recommendations: Recommendation[] = [
   },
   {
     text: "Mitesh is one of the best technical Hacker I ever worked with.\n\n His high expertise in Networking and Server Management made our jobs easier at Perk and Corona Labs. He helped me with lots of stuff, especially in shell scripting. He was responsible for the Security at Corona Labs and Perk. He is highly helpful, not only with the work things but also with personal tech helps. Mitesh's high expertise in Network and Security is highly needed for any company and certainly, he gets my full recommendation.",
-    name: "RanjithKumar Matheswaran",
+    name: "Ranjithkumar Matheswaran",
     role: "Software Engineer - Perk.com/coronalabs.com",
     linkedin: "https://www.linkedin.com/in/iranjith4/",
   },

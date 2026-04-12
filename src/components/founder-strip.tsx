@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MoveRight, Star, Server, Clock, ShieldCheck } from "lucide-react";
+import { GradientText } from "./ui/gradient-text";
 
 const stats = [
   { icon: Clock, label: "16+ Years", sublabel: "Linux/DevOps & Hosting Automation" },
@@ -48,8 +49,8 @@ export function FounderStrip() {
             {/* Content */}
             <div className="flex-1 text-center md:text-left">
               <blockquote className="text-zinc-300 text-lg leading-relaxed mb-4 italic">
-                After building EasyEngine and managing 50,000+ servers at WPMUDEV Hosting,
-                I created AnsiPress hosting engineered for scale, security, and peace of mind from day one.
+                After building <GradientText>EasyEngine</GradientText> and managing <GradientText> 50,000+ servers at WPMUDEV Hosting</GradientText>,<br></br>
+                I created <GradientText>AnsiPress Hosting</GradientText>  engineered for <GradientText>scale, security, and peace of mind</GradientText> from day one.
               </blockquote>
               {/* Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5">

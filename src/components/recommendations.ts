@@ -51,7 +51,7 @@ export const recommendations: Recommendation[] = [
   },
   {
     text: "Mitesh is one of the most experienced sysadmins and network engineers I've ever worked with. He is highly passionate about his work and he knows what he is doing really well.\n\n He is not only an expert in his field but a very good team player. He is super helpful and always open to discussing new ideas. He always loves to stay updated with the latest technologies and spread his knowledge to others.\n\n He never said no whenever he was contacted regarding anything within his domain and he always came up with an innovative and effective solution.\n\n I'll strongly recommend him.",
-    name: "Rupok Chowdhury Protik",
+    name: "Rupok Chowdhury",
     role: "DevOps Engineer - wpmudev.com",
     linkedin: "https://www.linkedin.com/in/rupok/",
   },
@@ -141,7 +141,7 @@ export const recommendations: Recommendation[] = [
   },
   {
     text: "Mitesh showed incredible talent for Server Configuration, Systems Administration and Automation. His comprehension of Linux Systems and Cloud computing makes him a key member on our team.\n\n It's not simply his specialized aptitudes that I estimate, however. Is a pleasure to work with Mitesh as a result of his incredibly uplifting mentality and commitment. His sense of responsibility and empathy are esteemed by all the team members.\n\n I am totally certain that Mitesh would be an extraordinary fit for any company. Not exclusively will he bring the sort of aptitudes and skills, also he help your business grow in any capacity he can.",
-    name: "Juan Carlos Álvarez Vélez",
+    name: "Juan Carlos",
     role: "Backend Engineer - wpmudev.com",
     linkedin: "https://www.linkedin.com/in/vantares/",
   },

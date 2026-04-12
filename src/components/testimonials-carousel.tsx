@@ -13,6 +13,42 @@ function LinkedInIcon({ size = 16 }: { size?: number }) {
   );
 }
 
+import { Recommendation } from "./recommendations";
+
+function RecommendationAvatar({ rec }: { rec: Recommendation }) {
+  const [hasError, setHasError] = useState(false);
+  
+  // Default: FirstLast.jpeg (no spaces, each word capitalized)
+  const filename = rec.name
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join("") + ".jpeg";
+
+  const imagePath = `/recommendations/${filename}`;
+
+  if (hasError) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-white/5 text-zinc-500 text-xs font-bold uppercase tracking-wider">
+        {rec.name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .slice(0, 2)}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imagePath}
+      alt={rec.name}
+      className="w-full h-full object-cover"
+      loading="lazy"
+      onError={() => setHasError(true)}
+    />
+  );
+}
+
 import { HighlightedText } from "@/components/ui/highlighted-text";
 import { recommendations } from "./recommendations";
 export function TestimonialsCarousel() {
@@ -144,9 +180,17 @@ export function TestimonialsCarousel() {
                     <HighlightedText text={rec.text} />
                   </div>
                   <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                    <div>
-                      <p className="text-white font-medium text-sm">{rec.name}</p>
-                      <p className="text-zinc-500 text-xs">{rec.role}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 shrink-0 group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity" />
+                        <div className="relative w-full h-full rounded-full border border-white/20 overflow-hidden bg-zinc-900 flex items-center justify-center">
+                          <RecommendationAvatar rec={rec} />
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-white font-medium text-sm">{rec.name}</p>
+                        <p className="text-zinc-500 text-xs">{rec.role}</p>
+                      </div>
                     </div>
                     <a
                       href={rec.linkedin}

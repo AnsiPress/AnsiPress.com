@@ -21,6 +21,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
+import { TestimonialsCarousel } from "@/components/testimonials-carousel";
 
 function LinkedInIcon({ size = 16 }: { size?: number }) {
   return (
@@ -146,42 +147,6 @@ function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string })
 /* ────────────────────────────────────────────── */
 
 export default function AboutPage() {
-  const recScrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const totalItems = recommendations.length;
-
-  const updateScrollState = () => {
-    if (!recScrollRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = recScrollRef.current;
-    setCanScrollLeft(scrollLeft > 5);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 5);
-
-    const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
-    const cardWidth = isDesktop ? (clientWidth - 24) / 2 : 380; // 24 is the gap
-    const index = Math.round(scrollLeft / cardWidth);
-    setCurrentIndex(index);
-  };
-
-  useEffect(() => {
-    const container = recScrollRef.current;
-    if (!container) return;
-    container.addEventListener("scroll", updateScrollState);
-    updateScrollState();
-    return () => container.removeEventListener("scroll", updateScrollState);
-  }, []);
-
-  const scrollRecs = (direction: "left" | "right") => {
-    if (!recScrollRef.current) return;
-    const scrollAmount = window.innerWidth >= 768 ? recScrollRef.current.clientWidth : 380;
-    const amount = direction === "left" ? -scrollAmount : scrollAmount;
-    recScrollRef.current.scrollBy({
-      left: amount,
-      behavior: "smooth",
-    });
-  };
 
   return (
     <main className="min-h-screen bg-black text-white selection:bg-purple-500/30">
@@ -547,115 +512,7 @@ export default function AboutPage() {
       </section>
 
       {/* ───────────── Recommendations ───────────── */}
-      <section className="py-24 border-t border-white/10 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent pointer-events-none" />
-
-        <div className="container relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-              What People{" "}
-              <GradientText>Say</GradientText>
-            </h2>
-            <p className="text-zinc-400 text-lg">
-              {recommendations.length} recommendations from colleagues and clients on LinkedIn.
-            </p>
-          </motion.div>
-
-          {/* Carousel */}
-          <div className="relative">
-            <button
-              onClick={() => scrollRecs("left")}
-              disabled={!canScrollLeft}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/80 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-0 disabled:pointer-events-none backdrop-blur-sm"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => scrollRecs("right")}
-              disabled={!canScrollRight}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/80 border border-white/20 flex items-center justify-center text-white hover:bg-white/10 transition-all disabled:opacity-0 disabled:pointer-events-none backdrop-blur-sm"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-
-            <div
-              ref={recScrollRef}
-              className="flex gap-6 overflow-x-auto px-4 snap-x snap-mandatory"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {recommendations.map((rec, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: Math.min(i * 0.03, 0.2) }}
-                  className="shrink-0 w-[calc(100vw-48px)] md:w-[calc(50%-12px)] snap-start"
-                >
-                  <div className="h-full p-6 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-colors flex flex-col">
-                    <div className="text-zinc-300 text-base leading-relaxed flex-1 mb-5 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar">
-                      <Quote className="w-7 h-7 text-purple-500/40 mb-2 shrink-0 inline mr-1 -mt-2" />
-                      <HighlightedText text={rec.text} />
-                    </div>
-                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                      <div>
-                        <p className="text-white font-medium text-sm">{rec.name}</p>
-                        <p className="text-zinc-500 text-xs">{rec.role}</p>
-                      </div>
-                      <a
-                        href={rec.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-purple-400 hover:text-purple-300 transition-colors"
-                        aria-label={`${rec.name} on LinkedIn`}
-                      >
-                        <LinkedInIcon size={16} />
-                      </a>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Progress Indicator */}
-            <div className="mt-12 flex flex-col items-center gap-4">
-              <div className="flex gap-1.5 max-w-full px-4 overflow-x-auto scrollbar-hide py-2">
-                {recommendations.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      if (!recScrollRef.current) return;
-                      const isDesktop = window.innerWidth >= 768;
-                      const cardWidth = (recScrollRef.current.clientWidth - 24) / 2;
-                      const scrollAmount = isDesktop ? cardWidth : 380;
-                      recScrollRef.current.scrollTo({ left: i * scrollAmount, behavior: "smooth" });
-                    }}
-                    className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${
-                      currentIndex === i ? "w-6 bg-purple-500" : "w-1.5 bg-white/10"
-                    }`}
-                    aria-label={`Go to recommendation ${i + 1}`}
-                  />
-                ))}
-              </div>
-              <div className="text-zinc-500 text-xs font-mono tracking-widest uppercase flex items-center gap-3">
-                <span className="text-purple-400">
-                  {(currentIndex + 1).toString().padStart(2, "0")}
-                </span>
-                <span className="w-8 h-px bg-white/10" />
-                <span>{totalItems.toString().padStart(2, "0")}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <TestimonialsCarousel />
 
       {/* ───────────── CTA ───────────── 
       <section className="py-20 border-t border-white/10">

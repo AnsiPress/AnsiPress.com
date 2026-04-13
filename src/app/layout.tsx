@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { inter, spaceGrotesk } from "@/lib/fonts";
 import "./globals.css";
 import Script from "next/script";
+import { VisibilityMonitor } from "@/components/ui/visibility-monitor";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ansipress.com";
 const GA_MEASUREMENT_ID = "G-S47ZELZY7G";
@@ -86,6 +87,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased text-white bg-black`}>
+        <VisibilityMonitor />
         {children}
         <Analytics />
         <SpeedInsights />

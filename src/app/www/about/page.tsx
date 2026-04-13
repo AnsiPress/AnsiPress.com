@@ -95,12 +95,62 @@ const milestones = [
 ];
 
 const openSourceProjects = [
-  { name: "EasyEngine", stars: "2.1K ★", desc: "Creator — CLI control panel for NGINX + WordPress", url: "https://github.com/EasyEngine/easyengine" },
-  { name: "WP-CLI", desc: "Fixed WordPress subdomain issue", url: "https://github.com/wp-cli/wp-cli" },
-  { name: "Google Chrome Labs", desc: "Privacy Sandbox tool contribution", url: "https://github.com/GoogleChromeLabs/ps-analysis-tool" },
-  { name: "Facebook ATC", desc: "Fixed issues in augmented-traffic-control", url: "https://github.com/facebookarchive/augmented-traffic-control" },
-  { name: "Discourse", desc: "Improved curl retry mechanism", url: "https://github.com/discourse/discourse" },
-  { name: "10up/WordPress Configs", desc: "NGINX auto variable optimization", url: "https://github.com/10up/WordPress-Server-Configs" },
+  {
+    name: "EasyEngine",
+    stars: "2.2K ★",
+    desc: "Creator — Built and scaled the CLI control panel that automated NGINX, PHP, MySQL, and WordPress provisioning on Ubuntu/Debian Servers.",
+    url: "https://github.com/EasyEngine/easyengine"
+  },
+  {
+    name: "Google Chrome Labs",
+    desc: "Privacy Sandbox demos — Improved developer workflows by enabling fast launch of isolated Chrome instances for multi-profile testing.",
+    url: "https://github.com/GoogleChromeLabs/ps-analysis-tool/commits/main/?author=MiteshShah"
+  },
+  {
+    name: "Facebook ATC",
+    desc: "Bug fix & issue reporting — Resolved stylesheet inconsistencies and surfaced framework-level Django rendering issues.",
+    url: "https://github.com/facebookarchive/augmented-traffic-control/pulls?q=is%3Apr+author%3AMiteshShah+is%3Aclosed"
+  },
+  {
+    name: "WP-CLI",
+    desc: "WordPress automation — Fixed WordPress subdomain installation edge cases.",
+    url: "https://github.com/wp-cli/wp-cli/pull/532"
+  },
+  {
+    name: "Nginx Wiki",
+    desc: "Official docs & regex fixes — Corrected WordPress multisite regex rules and improved EasyEngine integration documentation.",
+    url: "https://github.com/nginxinc/nginx-wiki/pulls?q=is%3Apr+author%3AMiteshShah+is%3Aclosed"
+  },
+  {
+    name: "Discourse",
+    desc: "Reliability optimization — Improved curl retry logic for stronger network fault tolerance during system operations.",
+    url: "https://github.com/discourse/discourse/pull/2638"
+  },
+    {
+    name: "10up / WordPress-Server-Configs",
+    desc: "NGINX configs — Added auto-variable support to simplify environment migrations across server changes.",
+    url: "https://github.com/10up/WordPress-Server-Configs/pull/2"
+  },
+  {
+    name: "10up / H5BP",
+    desc: "NGINX configs — Added auto-variable support to simplify environment migrations across server changes.",
+    url: "https://github.com/h5bp/server-configs-nginx/pull/38"
+  },
+  {
+    name: "Docker VPS",
+    desc: "Infrastructure automation — Added automatic NGINX reloads when virtual host configs change.",
+    url: "https://github.com/creack/docker-vps/pull/1"
+  },
+  {
+    name: "m-cli / Betty",
+    desc: "macOS CLI tools — Improved security by removing unnecessary sudo usage and reduced noisy curl output.",
+    url: "https://github.com/rgcr/m-cli/pull/20"
+  },
+  {
+    name: "Bangsh / JSON Resume",
+    desc: "CLI + resume tooling — Fixed PATH resolution issues and improved reference URL rendering in elegant resume themes.",
+    url: "https://github.com/bellthoven/bangsh/pull/8/changes"
+  },
 ];
 
 import { recommendations } from "@/components/recommendations";
@@ -398,12 +448,96 @@ export default function AboutPage() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
+              className="p-6 rounded-2xl border border-white/10 bg-white/[0.03]"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">Corporation Bank</h3>
+                  <p className="text-zinc-500 text-sm">October 21, 2011</p>
+                </div>
+              </div>
+              <ul className="space-y-2 text-zinc-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <Terminal className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+                  Discovered plain-text admin credentials within system logs and production DB dumps.
+                </li>
+                <li className="flex items-start gap-2">
+                  <Bug className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+                  Successfully demonstrated vulnerability and informed bank to fix
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="p-6 rounded-2xl border border-white/10 bg-white/[0.03]"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                  <Terminal className="w-5 h-5 text-purple-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">rtCamp.com</h3>
+                  <p className="text-zinc-500 text-sm">August 2012</p>
+                </div>
+              </div>
+              <ul className="space-y-2 text-zinc-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <Shield className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+                  Audited infrastructure during a hiring delay, uncovering a critical database and file-system vulnerability
+                </li>
+                <li className="flex items-start gap-2">
+                  <Award className="w-4 h-4 text-yellow-500 mt-0.5 shrink-0" />
+                  Sent "proof of exploit" directly to the CEO; received an immediate job offer on same day
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="p-6 rounded-2xl border border-white/10 bg-white/[0.03]"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold">HipChat (Atlassian)</h3>
+                  <p className="text-zinc-500 text-sm">January 7, 2015</p>
+                </div>
+              </div>
+              <ul className="space-y-2 text-zinc-400 text-sm">
+                <li className="flex items-start gap-2">
+                  <Shield className="w-4 h-4 text-purple-400 mt-0.5 shrink-0" />
+                  Found critical client S3 files publicly indexed on Google Search
+                </li>
+                <li className="flex items-start gap-2">
+                  <Award className="w-4 h-4 text-yellow-500 mt-0.5 shrink-0" />
+                  Recognized by Atlassian; received official swag & thanks (Order #39005808)
+                </li>
+              </ul>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.3 }}
               className="p-6 rounded-2xl border border-white/10 bg-white/[0.03]"
             >
               <div className="flex items-center gap-3 mb-4">
@@ -435,7 +569,7 @@ export default function AboutPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
               className="p-6 rounded-2xl border border-white/10 bg-white/[0.03]"
             >
               <div className="flex items-center gap-3 mb-4">
